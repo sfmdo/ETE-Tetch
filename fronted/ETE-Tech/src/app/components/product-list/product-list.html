@@ -1,0 +1,16 @@
+<p>product-list works!</p>
+<h2>Catálogo de Productos</h2>
+
+<div *ngFor="let product of products">
+
+  <h3>{{product.nombre}}</h3>
+
+  <p>{{product.descripcion}}</p>
+
+  <p>Precio: {{product.precio_venta}}</p>
+
+  <p>Stock: {{product.stock_actual}}</p>
+
+  <hr>
+
+</div>
