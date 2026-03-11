@@ -4,10 +4,10 @@
         <p>El carrito esta vacio</p>
     } @else {
         <ul>
-            @for (producto of carrito(); track producto.id){
+            @for (producto of carrito(); track producto.id_producto){
                 <li class="producto">
-                    <p>{{producto.nombrep}}</p>
-                    <p>{{producto.precio | currency}}</p>
+                    <p>{{producto.nombre}}</p>
+                    <p>{{producto.precio_venta | currency}}</p>
                     <button class="btn btn-danger" (click)="eliminar(producto)">Eliminar</button>
                 </li>
             }
@@ -17,3 +17,4 @@
         <button class="btn btn-primary" (click)="exportarXML()">Generar Tiquet</button>
     }
 </section>
+

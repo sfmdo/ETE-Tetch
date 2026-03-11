@@ -1,75 +1,77 @@
-import { Injectable } from "@angular/core";
+import { Injectable, signal, computed } from "@angular/core";
+import { Product } from "../models/product.model";
 
 @Injectable({providedIn: 'root'})
 export class CarritoService {
-    //Lista del carrito
+    //Lista del carrito usando signals para reactividad
+    private _listaCarrito = signal<Product[]>([]);
 
-    private listaCarrito: Producto[] = [];
+    // Exponer la lista como un signal de solo lectura
+    Lista = this._listaCarrito.asReadonly();
 
-    Lista = this.listaCarrito.asReadonly();
+    // Signal computado para el total
+    total = computed(() => {
+        return this._listaCarrito().reduce((acc, producto) => acc + producto.precio_venta, 0);
+    });
 
     //Agregar producto al carrito
-    agregarProducto(producto: Producto) {
-        this.listaCarrito.push(producto);
+    agregarProducto(producto: Product) {
+        this._listaCarrito.update(lista => [...lista, producto]);
     }
 
     //Eliminar producto del carrito
-    eliminarProducto(producto: Producto) {
-        this.listaCarrito = this.listaCarrito.filter(p => p.id !== producto.id);
+    eliminarProducto(producto: Product) {
+        this._listaCarrito.update(lista => lista.filter(p => p.id_producto !== producto.id_producto));
     }
 
     //Vaciar carrito
     vaciarCarrito() {
-        this.listaCarrito = [];
+        this._listaCarrito.set([]);
     }
 
-
-    //Obtener lista del carrito
-    getListaCarrito(): Producto[] {
-        return this.listaCarrito;
+    //Obtener lista del carrito (para compatibilidad si es necesario)
+    getListaCarrito(): Product[] {
+        return this._listaCarrito();
     }
 
-    //Obtener total del carrito
+    //Obtener total del carrito (para compatibilidad si es necesario)
     getTotal(): number {
-        return this.listaCarrito.reduce((total, producto) => total + producto.precio, 0);
+        return this.total();
     }
-
 
     exportarXML() {
-    //Estructura XML
-    let xml = `<xml version="1.0" encoding="UTF-8"?> <tiquet> /n `;
+        //Estructura XML
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<tiquet>\n`;
 
-    for (const producto of Lista) {
-        xml += `<producto>/n`;
-        xml += `<id>${producto.id}</id>/n`;
-        xml += `<nombre>${producto.nombrep}</nombre>/n`;
-        xml += `<servicio>${producto.servicio}</servicio>/n`;
-        xml += `<equipo>${producto.equipo}</equipo>/n`;
-        if(producto.descripcion){
-            xml += `<descripcion>${producto.descripcion}</descripcion>/n`;
+        for (const producto of this._listaCarrito()) {
+            xml += `  <producto>\n`;
+            xml += `    <id>${producto.id_producto}</id>\n`;
+            xml += `    <nombre>${this.escapeXML(producto.nombre)}</nombre>\n`;
+            xml += `    <categoria>${this.escapeXML(producto.categoria)}</categoria>\n`;
+            if (producto.descripcion) {
+                xml += `    <descripcion>${this.escapeXML(producto.descripcion)}</descripcion>\n`;
+            }
+            xml += `    <precio>${producto.precio_venta}</precio>\n`;
+            xml += `  </producto>\n`;
         }
-        xml += `<precio>${producto.precio}</precio>/n`;
-        xml += `</producto>/n`;
-    }
-    xml += `<total>${this.getTotal()}</total>/n`;
+        xml += `  <total>${this.getTotal()}</total>\n`;
+        xml += `</tiquet>`;
 
-    xml += `</producto>`;
-
-    const blob = new Blob([xml], {type: 'text/xml'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'tiquet.xml';
-    a.click();
-    URL.revokeObjectURL(url);
+        const blob = new Blob([xml], {type: 'text/xml'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'tiquet.xml';
+        a.click();
+        URL.revokeObjectURL(url);
     }
-    private escapeXML(value: string):string {
+
+    private escapeXML(value: string): string {
         return value
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&apos;');
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
     }
-
 }

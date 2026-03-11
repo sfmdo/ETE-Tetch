@@ -1,16 +1,19 @@
-<p>product-list works!</p>
-<h2>Catálogo de Productos</h2>
+<section>
+  <h2>Catálogo de Productos</h2>
 
-<div *ngFor="let product of products">
-
-  <h3>{{product.nombre}}</h3>
-
-  <p>{{product.descripcion}}</p>
-
-  <p>Precio: {{product.precio_venta}}</p>
-
-  <p>Stock: {{product.stock_actual}}</p>
-
-  <hr>
-
-</div>
+  <div class="row">
+    @for (product of products; track product.id_producto) {
+      <div class="col-md-4 mb-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">{{product.nombre}}</h5>
+            <p class="card-text">{{product.descripcion}}</p>
+            <p class="card-text"><strong>Precio:</strong> {{product.precio_venta | currency}}</p>
+            <p class="card-text"><small class="text-muted">Stock: {{product.stock_actual}}</small></p>
+            <button class="btn btn-success" (click)="agregarAlCarrito(product)">Agregar al Carrito</button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>
