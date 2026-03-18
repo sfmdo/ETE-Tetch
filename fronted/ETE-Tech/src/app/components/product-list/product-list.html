@@ -3,14 +3,15 @@
 
   <div class="row">
     @for (product of products; track product.id_producto) {
-      <div class="col-md-4 mb-3">
+      <div class="col-md-4 mb-3 producto-Contenedor">
         <div class="card h-100">
+          <img class="card-img-top imagen-producto" src="{{product.imagen}}" alt="{{product.nombre}}">
           <div class="card-body">
-            <h5 class="card-title">{{product.nombre}}</h5>
-            <p class="card-text">{{product.descripcion}}</p>
-            <p class="card-text"><strong>Precio:</strong> {{product.precio_venta | currency}}</p>
+            <h5 class="card-title card-bodyh5">{{product.nombre}}</h5>
+            <p class="card-text card-bodyp">{{product.descripcion}}</p>
+            <p class="card-text card-costo"><strong>$</strong> {{product.precio_venta}}</p>
             <p class="card-text"><small class="text-muted">Stock: {{product.stock_actual}}</small></p>
-            <button class="btn btn-success" (click)="agregarAlCarrito(product)">Agregar al Carrito</button>
+            <button class="btn btn-success boton-agregar" (click)="agregarAlCarrito(product)">Agregar al Carrito</button>
           </div>
         </div>
       </div>

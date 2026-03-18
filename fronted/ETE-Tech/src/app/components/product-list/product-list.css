@@ -1,0 +1,55 @@
+.producto-Contenedor{
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin: 16px;
+    background-color: #FFFFFF;
+    transition: all 0.3s ease;
+}
+
+.producto-Contenedor:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 16px;
+    border: 1px solid #1E3A8A;
+    background-color: #F0F4F8;
+}
+
+
+.imagen-producto{
+    width: 78%;
+    height: 47%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+}
+.card-body{
+    align-items: center;
+    justify-content: center;
+    color:#001C6C;
+}
+.card-bodyh5{
+    color: #001C6C;
+}
+.card-bodyp{
+    color: #001C6C;
+    font-size: 0.5rem;
+}
+.card-costo{
+    color: #001C6C;
+    font-weight: bold;
+    font-size: 1.2rem;
+    align-self:flex-end;
+}
+
+.boton-agregar{
+    background-color: #001C6C;
+    color:#FFFFFF;
+    justify-content: center;
+    
+}
+    
+    
+    

@@ -8,7 +8,8 @@ import { CarritoService } from '../../service/carrito.service';
   selector: 'app-product-list',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './product-list.html'
+  templateUrl: './product-list.html',
+  styleUrls: ['./product-list.css']
 })
 export class ProductList {
 
