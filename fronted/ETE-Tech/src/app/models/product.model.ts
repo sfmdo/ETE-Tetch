@@ -13,13 +13,9 @@ export interface Product {
   precio_venta: number;
   tasa_impuesto: number;
 
-  stock_actual?: number;
-  stock_minimo: number;
 
   imagen: string;
 
   estado: boolean;
-
-  cantidad?: number;
 
 }
