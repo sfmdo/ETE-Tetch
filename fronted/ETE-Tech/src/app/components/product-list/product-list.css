@@ -5,6 +5,9 @@
     margin: 16px;
     background-color: #FFFFFF;
     transition: all 0.3s ease;
+    color: #001C6C;
+    justify-content: center;
+    align-items: center;
 }
 
 .producto-Contenedor:hover{

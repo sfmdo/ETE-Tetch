@@ -9,7 +9,7 @@ import { CarritoService } from '../../service/carrito.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './product-list.html',
-  styleUrls: ['./product-list.css']
+  styleUrl: './product-list.css'
 })
 export class ProductList {
 
