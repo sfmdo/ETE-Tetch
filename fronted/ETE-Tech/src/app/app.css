@@ -11,3 +11,12 @@
     background-color: #1E3A8A;
     opacity: .8;
 }
+
+.sml{
+    font-size: 12px;
+}
+
+.last{
+    text-align: right;
+    margin-left: 10px;
+}
