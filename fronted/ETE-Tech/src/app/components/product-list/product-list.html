@@ -2,14 +2,14 @@
   <h2>Catálogo de Productos</h2>
 
   <div class="row">
-    @for (product of products; track product.id_producto) {
+    @for (product of products; track product.Product_ID) {
       <div class="col-md-4 mb-3 producto-Contenedor">
         <div class="card h-100">
-          <img class="card-img-top imagen-producto" src="{{product.imagen}}" alt="{{product.nombre}}">
+          <img class="card-img-top imagen-producto" src="{{product.Image}}" alt="{{product.Name}}">
           <div class="card-body">
-            <h5 class="card-title card-bodyh5">{{product.nombre}}</h5>
-            <p class="card-text card-bodyp">{{product.descripcion}}</p>
-            <p class="card-text card-costo"><strong>$</strong> {{product.precio_venta}}</p>
+            <h5 class="card-title card-bodyh5">{{product.Name}}</h5>
+            <p class="card-text card-bodyp">{{product.Description}}</p>
+            <p class="card-text card-costo"><strong>$</strong> {{product.Final_Price}}</p>
             <button class="btn btn-success boton-agregar" (click)="agregarAlCarrito(product)">Agregar al Carrito</button>
           </div>
         </div>
