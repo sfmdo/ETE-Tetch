@@ -119,7 +119,22 @@ class ProductServiceModel {
     };
 
     return productoFormateado as IProductService;
-}
+    }
+
+    async deductStock(productId: number, quantity: number): Promise<boolean> {
+        //! FUNCION SOLO PARA PRODUCTOS, LOS SERVICIOS NO MANEJAN STOCK
+        const query = `
+            UPDATE PRODUCTS 
+            SET Current_Stock = Current_Stock - ? 
+            WHERE Product_ID = ? 
+                AND Item_Type = 'PRODUCT' 
+                AND Current_Stock >= ?
+        `;
+        
+        const [result] = await connection.promise().query<ResultSetHeader>(query, [quantity, productId, quantity]);
+        
+        return result.affectedRows > 0;
+    }
 }
 
 export default new ProductServiceModel();

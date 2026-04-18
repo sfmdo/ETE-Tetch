@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import ProductModel, { ItemType, IProductService } from '../models/products_services.model';
+import ProductModel, { ItemType, IProductService } from '../../src/models/product_services.model';
 
 class ProductController {
 
