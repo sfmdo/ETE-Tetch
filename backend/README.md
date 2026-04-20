@@ -283,3 +283,272 @@ Permanently removes the record from the database.
 | **403 Forbidden** | `{"message": "Invalid or expired token."}` | Token is mathematically invalid or has passed its expiration time. |
 | **404 Not Found** | `{"message": "Record does not exist"}` | The ID provided in the URL does not match any record. |
 | **500 Internal Error**| `{"message": "Internal server error"}` | Server-side error (e.g., Database connection lost). |
+
+# 4. Service Order Management
+
+### Security Notice
+Access to these endpoints is restricted to authenticated users (Admin, Technicians/Users). All requests require authentication via a Bearer token (JWT).
+
+---
+
+## Data Schema and Logistics Logic
+
+### Logistics Workflow and Statuses
+The system tracks the lifecycle of a service through the Logistics_Status (Enum):
+
+*   **PENDING**: Initial state. Equipment is received but not yet diagnosed.
+*   **IN_PROGRESS**: Technician is currently working on the equipment.
+*   **COMPLETED**: Work is finished. Diagnosis and solution are registered. Ready for pickup/payment.
+*   **PAID**: Financial balance is zeroed, and the process is closed.
+
+### Calculation Logic
+*   **Atomic Transactions**: All operations (creating orders or adding items) use SQL transactions. If any step fails (e.g., insufficient stock), the entire process is rolled back to ensure data integrity.
+*   **Order_Total**: Sum of the base service cost plus all subsequently added parts/items.
+*   **Pending_Balance**: Amount remaining to be paid. Initially matches the Order_Total.
+
+---
+
+## Endpoints API
+
+### 4.1. Create Initial Order (Reception)
+Registers the equipment and the base service requested by the client. Generates a unique Order_Number automatically.
+
+*   **Endpoint**: POST /api/orders/
+*   **Access**: Authenticated (Admin, User)
+*   **Requirement**: RF2.3 (Mandatory capture of Brand, Model, and Fault).
+
+**Request Body:**
+```json
+{
+  "Client_ID": 10,
+  "Service_ID": 5,
+  "Brand_Model": "Samsung Galaxy S23",
+  "Reported_Fault": "Cracked screen and touch not responding"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "message": "Order initiated successfully",
+  "summary": {
+    "orderId": 101,
+    "orderNumber": "ORD-1713824561000",
+    "brandModel": "Samsung Galaxy S23",
+    "baseCost": 150.00
+  }
+}
+```
+
+---
+
+### 4.2. Add Items/Parts to Order
+Allows adding extra parts or services to an active order. It automatically updates the total cost and deducts inventory for physical products.
+
+*   **Endpoint**: POST /api/orders/add-items
+*   **Access**: Authenticated (Admin, User)
+*   **Requirement**: RF4.4 & RF4.5 (Stock deduction and cost auto-update).
+
+**Request Body:**
+```json
+{
+  "Order_ID": 101,
+  "items": [
+    { "Product_ID": 12, "Quantity": 1 },
+    { "Product_ID": 45, "Quantity": 2 }
+  ]
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "message": "Items added and total updated",
+  "newTotal": 285.50
+}
+```
+
+---
+
+### 4.3. Register Technical Diagnosis
+Used by the technician to provide the final report of the work performed.
+
+*   **Endpoint**: PUT /api/orders/:id/diagnosis
+*   **Access**: Authenticated (Admin, User)
+*   **Logic**: Upon success, the status automatically changes to COMPLETED.
+
+**Request Body:**
+```json
+{
+  "Technician_ID": 2,
+  "Final_Diagnosis": "Damaged OLED panel due to impact",
+  "Applied_Solution": "Screen assembly replacement and internal cleaning"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "message": "Technical information updated and order marked as completed."
+}
+```
+
+---
+
+### 4.4. Update Logistics Status
+Manual override for the order's progress state.
+
+*   **Endpoint**: PATCH /api/orders/:id/status
+*   **Access**: Authenticated (Admin, User)
+
+**Request Body:**
+```json
+{
+  "status": "IN_PROGRESS"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "message": "Status updated to IN_PROGRESS"
+}
+```
+
+---
+
+### 4.5. Payment Processing (PENDING)
+This module is currently under development.
+
+*   **Planned Integration**: PayPal Checkout API.
+*   **Planned Logic**: 
+    *   Create Payment Intent based on Pending_Balance.
+    *   Webhook listener to verify successful transaction.
+    *   Automatic status update to PAID upon confirmation.
+
+---
+
+## Order Module Error Handling
+
+| Status Code | Error Message (JSON) | Cause |
+| :--- | :--- | :--- |
+| 400 Bad Request | {"message": "Brand, Model, Description... are required"} | Missing mandatory fields in initial reception. |
+| 400 Bad Request | {"error": "Insufficient stock for: [Name]"} | Attempted to add a product that exceeds current inventory. |
+| 400 Bad Request | {"error": "Cannot add products to an already paid order"} | Business logic violation: Order is already closed. |
+| 404 Not Found | {"message": "Order not found"} | The Order_ID provided does not exist. |
+| 500 Internal Error | {"error": "[Database Error Details]"} | Transaction failed or database connection issue. |
+
+# 5. Expense Management (Administrative Egress)
+
+### Security Notice
+Access to these endpoints is restricted to authenticated users with Admin roles. All requests require authentication via a Bearer token (JWT).
+
+---
+
+## Data Schema and Logic
+
+### Financial Integrity
+*   **Expense_ID**: Primary key, auto-incremented.
+*   **Admin_Registry_ID**: Optional foreign key. Links the expense to the administrator who registered it.
+*   **Amount**: Stored as decimal(10,2) to ensure precision in financial calculations.
+*   **Expense_Date**: Automatically set to current_timestamp() upon creation.
+
+---
+
+## Endpoints API
+
+### 5.1. List All Expenses
+Retrieves the complete history of administrative expenses, ordered from newest to oldest.
+
+*   **Endpoint**: GET /api/expenses/
+*   **Access**: Authenticated (Admin)
+
+**Response (200 OK):**
+```json
+[
+  {
+    "Expense_ID": 10,
+    "Admin_Registry_ID": 1,
+    "Description": "Purchase of soldering wire and flux",
+    "Amount": 45.50,
+    "Expense_Date": "2026-04-20T10:00:00.000Z"
+  },
+  {
+    "Expense_ID": 9,
+    "Admin_Registry_ID": null,
+    "Description": "Monthly electricity bill",
+    "Amount": 120.00,
+    "Expense_Date": "2026-04-15T14:30:00.000Z"
+  }
+]
+```
+
+---
+
+### 5.2. Create New Expense
+Registers a new administrative expenditure.
+
+*   **Endpoint**: POST /api/expenses/
+*   **Access**: Authenticated (Admin)
+
+**Request Body:**
+```json
+{
+  "Description": "Office stationery and printer ink",
+  "Amount": 85.20,
+  "Admin_Registry_ID": 1
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "message": "Expense recorded successfully",
+  "expenseId": 11
+}
+```
+
+---
+
+### 5.3. Get Expense Detail
+Retrieves specific information about a single expenditure record.
+
+*   **Endpoint**: GET /api/expenses/:id
+*   **Access**: Authenticated (Admin)
+
+**Response (200 OK):**
+```json
+{
+  "Expense_ID": 11,
+  "Admin_Registry_ID": 1,
+  "Description": "Office stationery and printer ink",
+  "Amount": 85.20,
+  "Expense_Date": "2026-04-20T11:20:00.000Z"
+}
+```
+
+---
+
+### 5.4. Delete Expense Record
+Permanently removes an expense record. Warning: This action cannot be undone.
+
+*   **Endpoint**: DELETE /api/expenses/:id
+*   **Access**: Authenticated (Admin)
+
+**Response (200 OK):**
+```json
+{
+  "message": "Expense record deleted."
+}
+```
+
+---
+
+## Expense Module Error Handling
+
+| Status Code | Error Message (JSON) | Cause |
+| :--- | :--- | :--- |
+| 400 Bad Request | {"message": "Description and Amount are required."} | One or both mandatory fields are missing in the request body. |
+| 401 Unauthorized | {"message": "Access denied. No token provided."} | Token is missing from the Authorization header. |
+| 404 Not Found | {"message": "Expense not found."} | The provided Expense_ID does not exist in the database. |
+| 500 Internal Error | {"error": "[Database Error Details]"} | Server-side failure or database connection timeout. |

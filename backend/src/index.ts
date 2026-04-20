@@ -1,7 +1,11 @@
 import express, { Application } from 'express';
 import cors from 'cors';
+
+//Routers
 import productRoutes from "./routers/product_services.router";
 import authRoutes from "./routers/auth.router"
+import usersRoutes from "./routers/user.router"
+import ordersRoutes from "./routers/order.router"
 
 const app: Application = express();
 const PORT = 3000;
@@ -15,7 +19,8 @@ const baseApi = "/api/"
 
 app.use( baseApi + 'products', productRoutes);
 app.use( baseApi + 'auth', authRoutes);
-app.use( baseApi + 'users')
+app.use( baseApi + 'users', usersRoutes);
+app.use( baseApi + 'orders', ordersRoutes);
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);

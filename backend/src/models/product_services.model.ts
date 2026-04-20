@@ -121,17 +121,18 @@ class ProductServiceModel {
     return productoFormateado as IProductService;
     }
 
-    async deductStock(productId: number, quantity: number): Promise<boolean> {
-        //! FUNCION SOLO PARA PRODUCTOS, LOS SERVICIOS NO MANEJAN STOCK
+    async deductStock(productId: number, quantity: number, txConnection?: any): Promise<boolean> {
+        const db = txConnection || connection.promise(); 
+
         const query = `
-            UPDATE PRODUCTS 
+            UPDATE PRODUCTS_SERVICES 
             SET Current_Stock = Current_Stock - ? 
             WHERE Product_ID = ? 
                 AND Item_Type = 'PRODUCT' 
                 AND Current_Stock >= ?
         `;
         
-        const [result] = await connection.promise().query<ResultSetHeader>(query, [quantity, productId, quantity]);
+        const [result] = await db.query(query, [quantity, productId, quantity]) as [ResultSetHeader, any];
         
         return result.affectedRows > 0;
     }
