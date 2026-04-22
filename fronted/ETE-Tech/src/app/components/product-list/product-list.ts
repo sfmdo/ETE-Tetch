@@ -19,7 +19,9 @@ export class ProductList {
     private productService: ProductService,
     private carritoService: CarritoService
   ) {
-    this.products = this.productService.getProducts();
+    this.productService.getOnlyServices().subscribe(data => {
+          this.products = data;
+      });
   }
 
   agregarAlCarrito(producto: Product) {

@@ -1,21 +1,21 @@
 export interface Product {
 
-  id_producto: number;
-  codigo_sku: string;
+  Product_ID: number;
+  SKU_Code: string;
 
-  nombre: string;
-  descripcion: string;
-  categoria: string;
+  Name: string;
+  Description: string;
+  Category: string;
 
-  tipo_de_item: string;
+  Item_Type: string;
 
-  precio_costo: number;
-  precio_venta: number;
-  tasa_impuesto: number;
+  Cost_Price: number;
+  Sale_Price: number;
+  Tax_Rate: number;
+  
+  Final_Price?: number; 
 
-
-  imagen: string;
-
-  estado: boolean;
+  Image: string;
+  Status: number; 
 
 }

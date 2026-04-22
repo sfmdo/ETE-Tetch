@@ -4,10 +4,10 @@
         <p>El carrito esta vacio</p>
     } @else {
         <ul>
-            @for (producto of carrito(); track producto.id_producto){
+            @for (producto of carrito(); track producto.Product_ID){
                 <li class="producto">
-                    <p>{{producto.nombre}}</p>
-                    <p>{{producto.precio_venta | currency}}</p>
+                    <p>{{producto.Name}}</p>
+                    <p>{{producto.Final_Price | currency}}</p>
                     <button class="btn btn-danger" (click)="eliminar(producto)">Eliminar</button>
                 </li>
             }
