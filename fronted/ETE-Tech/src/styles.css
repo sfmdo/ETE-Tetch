@@ -1,8 +1,76 @@
-/* You can add global styles to this file, and also import other style files */
+/* Tailwind CSS v4 */
+@import "tailwindcss";
+
+/* Custom Design Tokens */
+@theme {
+  --color-surface: #f8fafb;
+  --color-surface-container: #eceeef;
+  --color-surface-container-highest: #e1e3e4;
+  --color-surface-container-high: #e6e8e9;
+  --color-surface-container-low: #f2f4f5;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-dim: #d8dadb;
+  --color-surface-bright: #f8fafb;
+  --color-surface-variant: #e1e3e4;
+  --color-surface-tint: #436182;
+  --color-inverse-surface: #2e3132;
+  --color-inverse-on-surface: #eff1f2;
+  --color-inverse-primary: #abc9ef;
+  --color-outline: #73777e;
+  --color-outline-variant: #c3c6ce;
+  --color-background: #f8fafb;
+  --color-on-background: #191c1d;
+  --color-on-surface: #191c1d;
+  --color-on-surface-variant: #43474d;
+  --color-primary: #002542;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #1b3b5a;
+  --color-on-primary-container: #87a5ca;
+  --color-primary-fixed: #d1e4ff;
+  --color-primary-fixed-dim: #abc9ef;
+  --color-on-primary-fixed: #001d35;
+  --color-on-primary-fixed-variant: #2a4968;
+  --color-secondary: #4c616c;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #cfe6f2;
+  --color-on-secondary-container: #526772;
+  --color-secondary-fixed: #cfe6f2;
+  --color-secondary-fixed-dim: #b4cad6;
+  --color-on-secondary-fixed: #071e27;
+  --color-on-secondary-fixed-variant: #354a53;
+  --color-tertiary: #322000;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #4e3400;
+  --color-on-tertiary-container: #d79600;
+  --color-tertiary-fixed: #ffdeac;
+  --color-tertiary-fixed-dim: #ffba38;
+  --color-on-tertiary-fixed: #281900;
+  --color-on-tertiary-fixed-variant: #604100;
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --font-family-headline: "Manrope", sans-serif;
+  --font-family-body: "Inter", sans-serif;
+  --font-family-label: "Inter", sans-serif;
+
+  --radius-DEFAULT: 0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 0.75rem;
+}
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap');
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
 
 body {
-    background-color: #D6DCEE;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
 }
