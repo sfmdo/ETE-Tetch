@@ -4,7 +4,7 @@ import { verifyToken } from '../middleware/auth.middleware'
 
 const router = Router();
 
-router.use(verifyToken);
+//router.use(verifyToken);
 
 router.get('/all', ProductController.getAll);        // GET /api/products/all
 router.get('/only-products', ProductController.getProducts); // GET /api/products/only-products

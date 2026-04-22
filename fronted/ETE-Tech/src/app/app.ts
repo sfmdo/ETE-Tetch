@@ -1,18 +1,19 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ProductList } from './components/product-list/product-list';
-import { Carrito } from './components/carrito/carrito';
+import { TopNavbar } from './components/top-navbar/top-navbar';
+import { SideNavbar } from './components/side-navbar/side-navbar';
+import { CatalogComponent } from './components/catalog/catalog';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ProductList, Carrito],
+  imports: [
+    RouterOutlet,
+    TopNavbar,
+    SideNavbar,
+    CatalogComponent,
+  ],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
-
-export class App {
-
-  protected readonly title = signal('ETE-Tech');
-
-}
+export class App {}

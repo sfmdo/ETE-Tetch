@@ -5,7 +5,7 @@ import * as PayPal from '../controllers/paypal.controller';
 
 const router = Router();
 
-router.use(verifyToken);
+//router.use(verifyToken);
 
 // Rutas de Órdenes (Logística)
 router.post('/', OrderController.createInitialOrder);        // Recepción

@@ -2,11 +2,10 @@ import dotenv from 'dotenv';
 import mysql from 'mysql2';
 
 dotenv.config();
-
 const requiredVariables: string[] = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
 
 const missingVariables: string[] = requiredVariables.filter(
-    (variable: string) => !process.env[variable]
+    (variable: string) => process.env[variable] === undefined
 );
 
 if (missingVariables.length > 0) {

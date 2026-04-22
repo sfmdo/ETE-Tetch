@@ -1,32 +1,45 @@
-<nav class="ETE-TechNav navbar navbar-expand-lg navbar-dark mb-4">
-  <div class="container col-12">
-    <div class="container col-6">
-      <a class="navbar-brand" href="#">{{ title() }}</a>
-    </div>
-    <div class="container col-6 last">
-      <a class="navbar-brand sml" href="#"> Mis pedidos</a>
-      <a class="navbar-brand sml" href="#"> Servicios</a>
-      <a class="navbar-brand sml" href="#"> Salir</a>
-    </div>
-  </div>
+<app-top-navbar></app-top-navbar>
 
-</nav>
-
-<main class="container ETE-TechBody ">
-  <div class="row">
-    <div class="col-md-8">
-      <app-product-list></app-product-list>
-    </div>
-    <div class="col-md-4 border-start">
-      <app-carrito></app-carrito>
-    </div>
-  </div>
+<div class="flex h-screen pt-16">
   
-  <router-outlet />
-</main>
+  <app-sidebar></app-sidebar>
 
-<footer class="ETE-TechFooter text-white text-center py-3 mt-4">
-  <div class="container">
-    <p class="mb-0">&copy; 2026 ETE-Tech. Todos los derechos reservados.</p>
-  </div>
-</footer>
+  <main class="flex-1 overflow-y-auto bg-surface p-8 relative">
+    
+    <router-outlet></router-outlet>
+
+    <footer class="mt-20 w-full py-12 border-t border-slate-200/10 dark:border-slate-800/10 bg-slate-50 dark:bg-slate-950 font-inter text-xs tracking-wide uppercase">
+      <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <p class="text-slate-500 dark:text-slate-400">© 2026 ETE-Tech Precision Hardware Management. All rights reserved.</p>
+        <div class="flex space-x-6">
+          <a class="text-slate-500 hover:text-blue-600 hover:underline underline-offset-4 transition-opacity duration-300" routerLink="/privacy">Privacy Policy</a>
+          <a class="text-slate-500 hover:text-blue-600 hover:underline underline-offset-4 transition-opacity duration-300" routerLink="/terms">Terms of Service</a>
+          <a class="text-slate-500 hover:text-blue-600 hover:underline underline-offset-4 transition-opacity duration-300" routerLink="/support">Contact Support</a>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-slate-50/90 backdrop-blur-md border-t border-slate-200/20 px-6 py-3 flex justify-between items-center z-50">
+  <button class="flex flex-col items-center gap-1 text-primary" routerLink="/dashboard">
+    <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+    <span class="text-[10px] font-bold uppercase">Home</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-slate-500" routerLink="/repairs">
+    <span class="material-symbols-outlined" data-icon="build">build</span>
+    <span class="text-[10px] font-bold uppercase">Repairs</span>
+  </button>
+  <button class="w-12 h-12 bg-primary text-on-primary rounded-full shadow-lg -mt-8 flex items-center justify-center">
+    <span class="material-symbols-outlined" data-icon="add">add</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-slate-500" routerLink="/inventory">
+    <span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+    <span class="text-[10px] font-bold uppercase">Items</span>
+  </button>
+  <button class="flex flex-col items-center gap-1 text-slate-500" routerLink="/staff">
+    <span class="material-symbols-outlined" data-icon="badge">badge</span>
+    <span class="text-[10px] font-bold uppercase">Staff</span>
+  </button>
+</nav>
