@@ -5,7 +5,11 @@ import * as PayPal from '../controllers/paypal.controller';
 
 const router = Router();
 
-router.use(verifyToken);
+//router.use(verifyToken);
+
+router.get('/get-all', OrderController.getAllOrders);               // Lista general (Dashboard)
+router.get('/:id', OrderController.getOrderById);      // Cabecera básica
+router.get('/:id/full', OrderController.getFullOrderDetails); // Detalle completo + Productos
 
 // Rutas de Órdenes (Logística)
 router.post('/', OrderController.createInitialOrder);        // Recepción
@@ -17,7 +21,6 @@ router.post('/capture-order',PayPal.capturePaypalOrder); // guardar la orden de 
 
 
 // Rutas de Pagos (Finanzas - Nuevo Controlador)
-//router.post('/payments/paypal/create', PaymentController.createPaypalOrder);
-//router.post('/payments/paypal/capture', PaymentController.capturePaypalOrder);
-
+router.post('/paypal/create', PayPal.createPaypalOrder);
+router.post('/paypal/capture', PayPal.capturePaypalOrder);
 export default router;

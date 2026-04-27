@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import ExpenseModel from '../../src/models/expense.model';
+import ExpenseModel from '../models/expense.model';
 
 class ExpenseController {
     

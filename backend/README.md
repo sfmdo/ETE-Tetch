@@ -284,147 +284,136 @@ Permanently removes the record from the database.
 | **404 Not Found** | `{"message": "Record does not exist"}` | The ID provided in the URL does not match any record. |
 | **500 Internal Error**| `{"message": "Internal server error"}` | Server-side error (e.g., Database connection lost). |
 
+Here is the specification formatted cleanly in Markdown:
+
+
 # 4. Service Order Management
 
-### Security Notice
+## Security Notice
 Access to these endpoints is restricted to authenticated users (Admin, Technicians/Users). All requests require authentication via a Bearer token (JWT).
 
----
+## Logistics Workflow and Statuses
+The system tracks the lifecycle of a service through the `Logistics_Status` (Enum):
 
-## Data Schema and Logistics Logic
-
-### Logistics Workflow and Statuses
-The system tracks the lifecycle of a service through the Logistics_Status (Enum):
-
-*   **PENDING**: Initial state. Equipment is received but not yet diagnosed.
-*   **IN_PROGRESS**: Technician is currently working on the equipment.
-*   **COMPLETED**: Work is finished. Diagnosis and solution are registered. Ready for pickup/payment.
-*   **PAID**: Financial balance is zeroed, and the process is closed.
-
-### Calculation Logic
-*   **Atomic Transactions**: All operations (creating orders or adding items) use SQL transactions. If any step fails (e.g., insufficient stock), the entire process is rolled back to ensure data integrity.
-*   **Order_Total**: Sum of the base service cost plus all subsequently added parts/items.
-*   **Pending_Balance**: Amount remaining to be paid. Initially matches the Order_Total.
+*   **PENDING:** Initial state. Equipment received, pending diagnosis.
+*   **IN_PROGRESS:** Technician is currently working on the equipment.
+*   **COMPLETED:** Work finished. Diagnosis and solution registered. Ready for pickup.
+*   **PAID:** Financial balance is zeroed, and the process is closed.
 
 ---
 
 ## Endpoints API
 
-### 4.1. Create Initial Order (Reception)
-Registers the equipment and the base service requested by the client. Generates a unique Order_Number automatically.
+### 4.1. Get All Orders (Dashboard)
+Retrieves a complete list of all service orders for management and tracking.
 
-*   **Endpoint**: POST /api/orders/
-*   **Access**: Authenticated (Admin, User)
-*   **Requirement**: RF2.3 (Mandatory capture of Brand, Model, and Fault).
+*   **Endpoint:** `GET /api/orders/`
+*   **Access:** Authenticated (Admin, User)
+*   **Response (200 OK):**
 
-**Request Body:**
 ```json
-{
-  "Client_ID": 10,
-  "Service_ID": 5,
-  "Brand_Model": "Samsung Galaxy S23",
-  "Reported_Fault": "Cracked screen and touch not responding"
-}
-```
-
-**Response (201 Created):**
-```json
-{
-  "message": "Order initiated successfully",
-  "summary": {
-    "orderId": 101,
-    "orderNumber": "ORD-1713824561000",
-    "brandModel": "Samsung Galaxy S23",
-    "baseCost": 150.00
+[
+  {
+    "Order_ID": 101,
+    "Order_Number": "ORD-1713824561000",
+    "Client_ID": 10,
+    "Logistics_Status": "PENDING",
+    "Order_Total": 150.00,
+    "Creation_Date": "2026-04-22T10:00:00Z"
   }
-}
+]
 ```
 
----
+### 4.2. Get Order by ID (Basic)
+Retrieves the header information of a specific order.
 
-### 4.2. Add Items/Parts to Order
-Allows adding extra parts or services to an active order. It automatically updates the total cost and deducts inventory for physical products.
+*   **Endpoint:** `GET /api/orders/:id`
+*   **Access:** Authenticated (Admin, User)
+*   **Response (200 OK):** Returns the `IOrder` object (excluding item details).
 
-*   **Endpoint**: POST /api/orders/add-items
-*   **Access**: Authenticated (Admin, User)
-*   **Requirement**: RF4.4 & RF4.5 (Stock deduction and cost auto-update).
+### 4.3. Get Full Order Details (Deep View)
+Retrieves the order header and an array of all associated products/services with their descriptive names.
 
-**Request Body:**
+*   **Endpoint:** `GET /api/orders/:id/full`
+*   **Access:** Authenticated (Admin, User)
+*   **Logic:** Performs a JOIN with the PRODUCTS table to resolve item names.
+*   **Response (200 OK):**
+
 ```json
 {
   "Order_ID": 101,
-  "items": [
-    { "Product_ID": 12, "Quantity": 1 },
-    { "Product_ID": 45, "Quantity": 2 }
+  "Order_Number": "ORD-1713824561000",
+  "Logistics_Status": "IN_PROGRESS",
+  "Items": [
+    {
+      "Product_ID": 5,
+      "Product_Name": "Base Diagnostic Service",
+      "Quantity": 1,
+      "Unit_Price": 150.00,
+      "Item_Type": "SERVICE"
+    },
+    {
+      "Product_ID": 12,
+      "Product_Name": "OLED Screen Replacement",
+      "Quantity": 1,
+      "Unit_Price": 120.00,
+      "Item_Type": "PRODUCT"
+    }
   ]
 }
 ```
 
-**Response (200 OK):**
+### 4.4. Create Initial Order (Reception)
+Registers equipment and base service. Generates `Order_Number` automatically.
+
+*   **Endpoint:** `POST /api/orders/`
+*   **Request Body:** 
 ```json
-{
-  "message": "Items added and total updated",
-  "newTotal": 285.50
+{ 
+  "Client_ID": 10, 
+  "Service_ID": 5, 
+  "Brand_Model": "...", 
+  "Reported_Fault": "..." 
 }
 ```
 
----
+### 4.5. Add Items/Parts to Order
+Adds extra parts/services. Updates total and deducts inventory.
 
-### 4.3. Register Technical Diagnosis
-Used by the technician to provide the final report of the work performed.
-
-*   **Endpoint**: PUT /api/orders/:id/diagnosis
-*   **Access**: Authenticated (Admin, User)
-*   **Logic**: Upon success, the status automatically changes to COMPLETED.
-
-**Request Body:**
+*   **Endpoint:** `POST /api/orders/add-items`
+*   **Request Body:** 
 ```json
-{
-  "Technician_ID": 2,
-  "Final_Diagnosis": "Damaged OLED panel due to impact",
-  "Applied_Solution": "Screen assembly replacement and internal cleaning"
+{ 
+  "Order_ID": 101, 
+  "items": [
+    { "Product_ID": 12, "Quantity": 1 }
+  ] 
 }
 ```
 
-**Response (200 OK):**
+### 4.6. Register Technical Diagnosis
+Final report. Automatically changes status to `COMPLETED`.
+
+*   **Endpoint:** `PUT /api/orders/:id/diagnosis`
+*   **Request Body:** 
 ```json
-{
-  "message": "Technical information updated and order marked as completed."
+{ 
+  "Technician_ID": 2, 
+  "Final_Diagnosis": "...", 
+  "Applied_Solution": "..." 
 }
 ```
 
----
+### 4.7. Update Logistics Status
+Manual override for the order's state.
 
-### 4.4. Update Logistics Status
-Manual override for the order's progress state.
-
-*   **Endpoint**: PATCH /api/orders/:id/status
-*   **Access**: Authenticated (Admin, User)
-
-**Request Body:**
+*   **Endpoint:** `PATCH /api/orders/:id/status`
+*   **Request Body:** 
 ```json
-{
-  "status": "IN_PROGRESS"
+{ 
+  "status": "IN_PROGRESS" 
 }
 ```
-
-**Response (200 OK):**
-```json
-{
-  "message": "Status updated to IN_PROGRESS"
-}
-```
-
----
-
-### 4.5. Payment Processing (PENDING)
-This module is currently under development.
-
-*   **Planned Integration**: PayPal Checkout API.
-*   **Planned Logic**: 
-    *   Create Payment Intent based on Pending_Balance.
-    *   Webhook listener to verify successful transaction.
-    *   Automatic status update to PAID upon confirmation.
 
 ---
 

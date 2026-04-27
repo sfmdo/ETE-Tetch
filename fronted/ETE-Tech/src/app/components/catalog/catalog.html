@@ -1,0 +1,112 @@
+<div class="flex-1 overflow-y-auto pt-16 md:pt-0 pb-8 px-4 md:px-12 bg-surface h-full">
+  <div class="max-w-7xl mx-auto mt-8 flex flex-col lg:flex-row gap-8">
+    
+    <section class="flex-1 flex flex-col gap-6">
+      <div>
+        <h2 class="font-headline text-2xl font-bold tracking-tight text-on-surface mb-1">Catálogo de Servicios</h2>
+        <p class="font-body text-sm text-on-surface-variant">Selecciona un servicio para iniciar la orden.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div *ngFor="let service of services" 
+             (click)="selectProduct(service)"
+             [class.ring-2]="selectedProduct?.Product_ID === service.Product_ID"
+             [class.ring-primary]="selectedProduct?.Product_ID === service.Product_ID"
+             [class.ring-1]="selectedProduct?.Product_ID !== service.Product_ID"
+             [class.ring-outline-variant]="selectedProduct?.Product_ID !== service.Product_ID"
+             class="bg-surface-container-lowest rounded-xl p-5 flex flex-col gap-4 hover:shadow-md transition-all cursor-pointer group">
+          
+          <div class="flex justify-between items-start">
+            <div class="w-10 h-10 rounded-lg bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
+              <span class="material-symbols-outlined">{{ service.Item_Type === 'SERVICE' ? 'build' : 'shopping_bag' }}</span>
+            </div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant bg-surface-container px-2 py-1 rounded-md">
+              {{ service.Category }}
+            </span>
+          </div>
+          
+          <div>
+            <h3 class="font-headline font-bold text-slate-800">{{ service.Name }}</h3>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-2">{{ service.Description }}</p>
+          </div>
+          
+          <div class="mt-auto pt-3 flex justify-between items-center border-t border-slate-50">
+            <span class="font-bold text-primary">${{ service.Sale_Price | number:'1.2-2' }}</span>
+            <span class="material-symbols-outlined text-outline group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside *ngIf="showForm && selectedProduct" class="w-full lg:w-[400px] shrink-0"> 
+  <div class="bg-white rounded-2xl shadow-xl border border-slate-200 flex flex-col sticky top-8 overflow-hidden"> 
+    
+    <form *ngIf="!mostrarCheckout" [formGroup]="receptionForm" (ngSubmit)="onSubmitForm()" class="flex flex-col"> 
+      
+      <div class="p-6 bg-slate-50 border-b border-slate-100"> 
+        <h2 class="font-headline text-lg font-bold text-slate-800 flex items-center gap-2"> 
+          <span class="material-symbols-outlined text-primary">receipt_long</span> 
+          Nueva Orden 
+        </h2> 
+        <p class="text-xs text-slate-500 mt-1">Servicio: <span class="font-bold text-primary">{{ selectedProduct.Name }}</span></p> 
+      </div> 
+
+      <div class="p-6 space-y-6"> 
+        <div class="space-y-3"> 
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Especificaciones del Equipo</label> 
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3"> 
+            <div class="flex flex-col gap-1"> 
+              <select formControlName="brand" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"> 
+                <option value="" disabled selected>Marca</option> 
+                <option *ngFor="let b of brands" [value]="b">{{b}}</option> 
+              </select> 
+            </div> 
+            <div class="flex flex-col gap-1"> 
+              <input formControlName="model" type="text" placeholder="Modelo (Ej: S23)" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"/> 
+            </div> 
+          </div> 
+        </div> 
+
+        <div *ngIf="isServiceCategory()" class="space-y-3"> 
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Reporte de Falla (Mandatorio)</label> 
+          <textarea formControlName="faultDescription" rows="4" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm resize-none" placeholder="Describe el problema que reporta el cliente..."></textarea> 
+        </div> 
+
+        <div class="flex items-center justify-between px-1"> 
+          <span class="text-[10px] text-slate-400 font-mono">Operador ID: {{ currentUserId }}</span> 
+          <span class="text-[10px] text-slate-400 font-mono">Service ID: {{ selectedProduct.Product_ID }}</span> 
+        </div> 
+      </div> 
+
+      <div class="p-6 bg-slate-50 border-t border-slate-100 space-y-4"> 
+        <div class="flex justify-between items-center"> 
+          <span class="text-sm font-medium text-slate-600">Costo Base</span> 
+          <span class="text-xl font-bold text-slate-800">${{ selectedProduct.Sale_Price | number:'1.2-2' }}</span> 
+        </div> 
+        
+        <div class="flex gap-3"> 
+          <button type="button" (click)="cancelReception()" class="flex-1 px-4 py-2.5 text-sm font-semibold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors"> 
+            Cancelar 
+          </button> 
+          <button type="submit" [disabled]="receptionForm.invalid" class="flex-[2] bg-blue-600 text-white px-4 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-blue-200 hover:bg-blue-700 disabled:opacity-50 disabled:shadow-none transition-all flex items-center justify-center gap-2"> 
+            <span class="material-symbols-outlined text-sm">payments</span> 
+            Ir al Pago
+          </button> 
+        </div> 
+      </div> 
+    </form> 
+
+    <app-checkout 
+      *ngIf="mostrarCheckout"
+      [product]="selectedProduct"
+      [formValues]="receptionForm.value"
+      [currentUserId]="currentUserId"
+      (orderCreated)="onFinalizarTodo($event)"
+      (volverAtras)="mostrarCheckout = false">
+    </app-checkout>
+
+  </div>
+</aside>
+
+  </div>
+</div>

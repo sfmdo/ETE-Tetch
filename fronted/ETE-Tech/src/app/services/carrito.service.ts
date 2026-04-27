@@ -61,37 +61,14 @@ export class CarritoService {
             
             xml += `  </producto>\n`;
         }
-
-        const totalVal = this.total();
-        const subTotalVal = totalVal / 1.16;
-        const ivaVal = totalVal - subTotalVal;
-
-        const subTotalStr = subTotalVal.toFixed(2);
-        const ivaStr = ivaVal.toFixed(2);
-        const totalStr = totalVal.toFixed(2);
-
-        xml += `    </cfdi:Conceptos>
-
-    <cfdi:Impuestos TotalImpuestosTrasladados="${ivaStr}">
-        <cfdi:Traslados>
-            <cfdi:Traslado Base="${subTotalStr}" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="${ivaStr}"/>
-        </cfdi:Traslados>
-    </cfdi:Impuestos>
-
-    <cfdi:Addenda>
-        <TotalesFactura>
-            <Subtotal>${subTotalStr}</Subtotal>
-            <IVA_16>${ivaStr}</IVA_16>
-            <TotalPago>${totalStr}</TotalPago>
-        </TotalesFactura>
-    </cfdi:Addenda>
-</cfdi:Comprobante>`;
+        xml += `  <total>${this.getTotal()}</total>\n`;
+        xml += `</tiquet>`;
 
         const blob = new Blob([xml], {type: 'text/xml'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'factura_cfdi_4_0.xml';
+        a.download = 'tiquet.xml';
         a.click();
         URL.revokeObjectURL(url);
     }

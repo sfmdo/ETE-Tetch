@@ -1,6 +1,6 @@
 import { Component, Signal } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { CarritoService } from '../../service/carrito.service';
+import { CarritoService } from '../../services/carrito.service';
 import { Product } from '../../models/product.model';
 
 @Component({

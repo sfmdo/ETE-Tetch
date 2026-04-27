@@ -1,7 +1,8 @@
-/* Tailwind CSS v4 */
 @import "tailwindcss";
 
-/* Custom Design Tokens */
+
+
+/* 3. TU CONFIGURACIÓN DE TEMA */
 @theme {
   --color-surface: #f8fafb;
   --color-surface-container: #eceeef;
@@ -61,16 +62,21 @@
   --radius-full: 0.75rem;
 }
 
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap');
-
+/* 4. AJUSTES FINALES */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
 }
 
 body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  font-family: var(--font-family-body);
 }

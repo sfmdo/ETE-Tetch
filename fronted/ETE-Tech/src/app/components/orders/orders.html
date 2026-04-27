@@ -1,0 +1,103 @@
+<main class="flex-1 flex flex-col h-screen overflow-y-auto bg-surface relative">
+  <header class="px-4 md:px-8 pt-10 pb-6 shrink-0 z-10 bg-surface/80 backdrop-blur-md sticky top-0 border-b border-surface-container-low">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div>
+        <h1 class="font-headline text-2xl md:text-3xl font-extrabold tracking-tight text-on-surface mb-1">Órdenes de Servicio Activas</h1>
+        <p class="font-body text-sm text-on-surface-variant">Panel de Logística y Seguimiento</p>
+      </div>
+      <div class="flex items-center">
+        <div class="relative w-full md:w-auto">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+          <input (input)="onSearch($event)" class="pl-9 pr-4 py-2 bg-surface-container-low text-sm font-body rounded-DEFAULT border-none focus:ring-0 focus:bg-surface-container-lowest focus:border-b-2 focus:border-b-primary transition-all w-full md:w-64 placeholder-outline-variant text-on-surface" placeholder="Buscar ID o Cliente..." type="text"/>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex-1 px-4 md:px-8 py-6 max-w-7xl mx-auto w-full">
+    
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8">
+      <div class="flex items-center p-1 bg-surface-container-low rounded-lg overflow-x-auto whitespace-nowrap scrollbar-hide">
+        <button *ngFor="let f of filterOptions"
+          (click)="applyFilter(f.value)"
+          [ngClass]="currentFilter === f.value ? 'bg-surface-container-lowest text-primary shadow-sm' : 'text-on-surface-variant hover:text-on-surface'"
+          class="px-4 py-1.5 text-sm font-label font-medium rounded-DEFAULT transition-all">
+          {{ f.label }}
+        </button>
+      </div>
+
+      <div class="flex space-x-4 text-sm font-label shrink-0">
+        <div class="flex items-center space-x-2 bg-surface-container-low px-3 py-1.5 rounded-DEFAULT">
+          <span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+          <span class="text-on-surface-variant">{{ stats.pending }} Pendientes</span>
+        </div>
+        <div class="flex items-center space-x-2 bg-surface-container-low px-3 py-1.5 rounded-DEFAULT">
+          <span class="w-2 h-2 rounded-full bg-primary"></span>
+          <span class="text-on-surface-variant">{{ stats.inProgress }} En Curso</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="flex flex-col items-center justify-center py-20">
+      <div class="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p class="text-on-surface-variant font-medium">Cargando órdenes...</p>
+    </div>
+
+    <div *ngIf="!loading && filteredOrders.length > 0" class="w-full flex flex-col space-y-3">
+      <div class="hidden md:grid md:grid-cols-12 gap-4 px-6 py-3 text-xs font-label uppercase tracking-widest text-outline-variant mb-1">
+        <div class="col-span-3">ID de Orden</div> 
+        <div class="col-span-3">Cliente / Equipo</div>
+        <div class="col-span-2">Estado</div>
+        <div class="col-span-2">Recibida</div>
+        <div class="col-span-2 text-right">Acción</div>
+      </div>
+
+      <div *ngFor="let order of filteredOrders" 
+           class="flex flex-col md:grid md:grid-cols-12 gap-4 md:items-center px-4 md:px-6 py-4 bg-surface-container-lowest rounded-xl md:rounded-lg border border-surface-container-low hover:bg-surface-container-low transition-colors duration-200 group">
+        
+        <div class="md:col-span-3 flex flex-col justify-center min-w-0 border-b border-surface-container-low md:border-none pb-3 md:pb-0">
+          <span class="md:hidden text-xs text-outline-variant font-bold uppercase tracking-wider mb-1">ID de Orden</span>
+          <span class="font-headline font-bold text-on-surface tracking-tight truncate">
+            {{ order?.Order_Number }}
+          </span>
+        </div>
+        
+        <div class="md:col-span-3 flex flex-col justify-center min-w-0 pt-2 md:pt-0">
+          <span class="md:hidden text-xs text-outline-variant font-bold uppercase tracking-wider mb-1">Cliente / Equipo</span>
+          <span class="font-body font-medium text-on-surface text-sm truncate">ID Cliente: {{ order?.Client_ID }}</span>
+          <span class="font-body text-xs text-on-surface-variant mt-0.5 truncate">{{ order?.Brand_Model }}</span>
+        </div>
+
+        <div class="md:col-span-2 flex flex-col justify-center min-w-0 mt-1 md:mt-0">
+          <span class="md:hidden text-xs text-outline-variant font-bold uppercase tracking-wider mb-1">Estado</span>
+          <div class="inline-flex items-center space-x-2 bg-surface-container-highest px-3 py-1 rounded-full w-max">
+              <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getStatusColor(order?.Logistics_Status || '')"></span>
+              <span class="font-label text-xs font-medium text-on-surface">
+                {{ order?.Logistics_Status ? (statusTranslation[order.Logistics_Status] || order.Logistics_Status) : '' }}
+              </span>
+          </div>
+        </div>
+
+        <div class="md:col-span-2 flex flex-col justify-center min-w-0 mt-1 md:mt-0 font-body text-sm text-on-surface-variant">
+          <span class="md:hidden text-xs text-outline-variant font-bold uppercase tracking-wider mb-1">Recibida</span>
+          <span class="truncate">
+            {{ order?.Creation_Date || 'Sin fecha' }}
+          </span>
+        </div>
+
+        <div class="md:col-span-2 flex md:justify-end items-center mt-3 md:mt-0">
+          <a *ngIf="order?.Order_ID" [routerLink]="['/orders/logistic', order.Order_ID]" 
+            class="w-full md:w-auto px-4 py-2 md:py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-sm font-label font-bold transition-colors flex items-center justify-center gap-2 group/btn cursor-pointer">
+            <span>Revisar</span>
+            <span class="material-symbols-outlined text-[18px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && filteredOrders.length === 0" class="text-center py-20 border-2 border-dashed border-surface-container-highest rounded-2xl">
+      <p class="text-on-surface-variant">No se encontraron órdenes para mostrar.</p>
+    </div>
+
+  </div>
+</main>

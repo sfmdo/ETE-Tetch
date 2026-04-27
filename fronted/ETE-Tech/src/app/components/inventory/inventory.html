@@ -1,0 +1,93 @@
+<div class="flex-1 overflow-y-auto p-8 relative bg-slate-50/50">
+  
+  <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 tracking-tight mb-1">Master Inventory</h1>
+      <p class="text-slate-500 text-sm">Panel de control de activos y servicios técnicos.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <button 
+        (click)="goToManage()"
+        class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition-all active:scale-95 flex items-center gap-2">
+        Administrar Productos
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <div *ngFor="let stat of [
+      {label: 'Total SKUs', val: stats.totalSkus, icon: 'inventory_2', color: 'text-blue-600'},
+      {label: 'Stock Crítico', val: stats.lowStockCount, icon: 'warning', color: 'text-amber-500'},
+      {label: 'Valor Total', val: (stats.inventoryValue | currency), icon: 'payments', color: 'text-emerald-600'},
+      {label: 'Reparaciones', val: stats.pendingRepairs, icon: 'build', color: 'text-slate-600'}
+    ]" class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{stat.label}}</span>
+        <span class="material-symbols-outlined text-lg" [ngClass]="stat.color">{{stat.icon}}</span>
+      </div>
+      <h3 class="text-2xl font-bold text-slate-800">{{stat.val}}</h3>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    
+    <div class="flex items-center gap-1 p-4 border-b border-slate-100 bg-slate-50/30">
+      <button (click)="applyFilter('ALL')" 
+        [class]="currentFilter === 'ALL' ? 'bg-white shadow-sm text-blue-600 border-slate-200' : 'text-slate-500 border-transparent hover:bg-slate-100'"
+        class="px-4 py-1.5 rounded-md text-xs font-bold border transition-all">Todos</button>
+      <button (click)="applyFilter('PRODUCT')" 
+        [class]="currentFilter === 'PRODUCT' ? 'bg-white shadow-sm text-blue-600 border-slate-200' : 'text-slate-500 border-transparent hover:bg-slate-100'"
+        class="px-4 py-1.5 rounded-md text-xs font-bold border transition-all">Productos</button>
+      <button (click)="applyFilter('SERVICE')" 
+        [class]="currentFilter === 'SERVICE' ? 'bg-white shadow-sm text-blue-600 border-slate-200' : 'text-slate-500 border-transparent hover:bg-slate-100'"
+        class="px-4 py-1.5 rounded-md text-xs font-bold border transition-all">Servicios</button>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="text-[11px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50">
+            <th class="py-4 px-6">SKU</th>
+            <th class="py-4 px-6">Nombre del Item</th>
+            <th class="py-4 px-6">Categoría</th>
+            <th class="py-4 px-6 text-right">Venta</th>
+            <th class="py-4 px-6 text-right">Stock</th>
+            <th class="py-4 px-6">Estado</th>
+            <th class="py-4 px-6"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr *ngFor="let item of filteredProducts" class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-4 px-6 font-mono text-[11px] text-slate-400 font-bold">{{ item.SKU_Code }}</td>
+            <td class="py-4 px-6">
+              <div class="flex flex-col">
+                <span class="text-sm font-bold text-slate-700">{{ item.Name }}</span>
+                <span class="text-[10px] text-slate-400">{{ item.Item_Type }}</span>
+              </div>
+            </td>
+            <td class="py-4 px-6">
+              <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md">{{ item.Category }}</span>
+            </td>
+            <td class="py-4 px-6 text-right font-bold text-slate-700">{{ item.Sale_Price | currency }}</td>
+            <td class="py-4 px-6 text-right font-medium">
+              <span [class.text-rose-500]="item.Current_Stock === 0" [class.text-amber-500]="item.Current_Stock <= item.Minimum_Stock">
+                {{ item.Item_Type === 'SERVICE' ? '∞' : item.Current_Stock }}
+              </span>
+            </td>
+            <td class="py-4 px-6">
+              <div [ngClass]="getStatusInfo(item).text" class="inline-flex items-center px-2.5 py-1 rounded-full gap-2">
+                <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getStatusInfo(item).dot"></span>
+                <span class="text-[10px] font-bold uppercase tracking-tight">{{ getStatusInfo(item).label }}</span>
+              </div>
+            </td>
+            <td class="py-4 px-6 text-right">
+              <button class="text-slate-300 hover:text-slate-600 transition-colors">
+                <span class="material-symbols-outlined">more_horiz</span>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
