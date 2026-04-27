@@ -92,7 +92,7 @@ import { Router } from '@angular/router';
           <!-- Registration Link -->
           <p class="mt-10 text-center text-sm text-[#43474d]">
             ¿Quieres comenzar?
-            <a class="font-medium text-[#002542] hover:text-[#1b3b5a] transition-colors ml-1" href="#">Registrarse</a>
+            <a class="font-medium text-[#002542] hover:text-[#1b3b5a] transition-colors ml-1" href="">Registrarse</a>
           </p>
         </div>
       </div>
@@ -122,7 +122,7 @@ export class InicioDeSesion {
         localStorage.setItem('token', response.token);
         localStorage.setItem('user', JSON.stringify(response.user));
         console.log('Login exitoso', response);
-        this.router.navigate(['/']);
+        this.router.navigate(['/productos']);
       },
       error: (err) => {
         if (err.status === 401) {

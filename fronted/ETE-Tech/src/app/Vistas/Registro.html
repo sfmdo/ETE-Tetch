@@ -1,1 +1,165 @@
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ETE-Tech - Login & Registration</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f8fafb",
+                        "surface-container": "#eceeef",
+                        "surface-container-highest": "#e1e3e4",
+                        "inverse-surface": "#2e3132",
+                        "outline-variant": "#c3c6ce",
+                        "on-secondary-fixed-variant": "#354a53",
+                        "secondary-fixed-dim": "#b4cad6",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#2a4968",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#001d35",
+                        "tertiary-fixed-dim": "#ffba38",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#cfe6f2",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#191c1d",
+                        "tertiary-container": "#4e3400",
+                        "inverse-on-surface": "#eff1f2",
+                        "secondary": "#4c616c",
+                        "on-tertiary-fixed-variant": "#604100",
+                        "on-secondary-fixed": "#071e27",
+                        "on-tertiary-container": "#d79600",
+                        "on-surface-variant": "#43474d",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#f8fafb",
+                        "primary": "#002542",
+                        "outline": "#73777e",
+                        "surface-container-low": "#f2f4f5",
+                        "tertiary": "#322000",
+                        "on-primary-container": "#87a5ca",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffdeac",
+                        "on-surface": "#191c1d",
+                        "surface-variant": "#e1e3e4",
+                        "surface-dim": "#d8dadb",
+                        "primary-fixed": "#d1e4ff",
+                        "surface-tint": "#436182",
+                        "surface-container-high": "#e6e8e9",
+                        "primary-fixed-dim": "#abc9ef",
+                        "secondary-fixed": "#cfe6f2",
+                        "on-tertiary-fixed": "#281900",
+                        "surface-bright": "#f8fafb",
+                        "inverse-primary": "#abc9ef",
+                        "primary-container": "#1b3b5a",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#526772"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body h-screen w-screen overflow-hidden flex">
+
+        <div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-surface relative overflow-y-auto">
+        <div class="absolute top-8 right-8 lg:hidden flex items-center gap-2">
+            <span class="material-symbols-outlined text-2xl text-primary" style="font-variation-settings: 'FILL' 1;">terminal</span>
+            <span class="font-headline font-bold text-xl tracking-tighter text-primary">ETE-Tech</span>
+        </div>
+
+        <div class="w-full max-w-md">
+            <div class="mb-10">
+                <h2 class="font-headline text-3xl font-bold tracking-tight text-on-surface mb-2">Bienvenido</h2>
+                <p class="font-body text-on-surface-variant">Inicia sesión para ingresar a tu cuenta.</p>
+            </div>
+            <form class="space-y-6">
+                <div class="space-y-2">
+                    <label class="block font-label text-sm font-medium text-on-surface" for="email">Correo Electrónico</label>
+                    <div class="relative group">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary transition-colors">mail</span>
+                        <input class="w-full pl-11 pr-4 py-3 bg-surface-container-low text-on-surface font-body border-0 border-b-2 border-transparent focus:bg-surface-container-lowest focus:border-primary focus:ring-0 transition-all rounded-t-DEFAULT" id="email" placeholder="admin@ete-tech.com" required="" type="email"/>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="block font-label text-sm font-medium text-on-surface" for="password">Contraseña</label>
+                    </div>
+                    <div class="relative group">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary transition-colors">lock</span>
+                        <input class="w-full pl-11 pr-11 py-3 bg-surface-container-low text-on-surface font-body border-0 border-b-2 border-transparent focus:bg-surface-container-lowest focus:border-primary focus:ring-0 transition-all rounded-t-DEFAULT" id="password" placeholder="••••••••" required="" type="password"/>
+                        <button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface transition-colors focus:outline-none" type="button">
+                            <span class="material-symbols-outlined text-xl">visibility_off</span>
+                        </button>
+                    </div>
+                </div>
+                <button class="w-full py-3 px-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-label font-medium rounded-DEFAULT shadow-[0_4px_12px_rgba(25,28,29,0.15)] hover:shadow-[0_6px_16px_rgba(25,28,29,0.2)] hover:-translate-y-[1px] transition-all active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface" type="submit">
+                    Iniciar Sesión 
+                </button>
+            </form>
+            <div class="my-8 relative">
+                <div aria-hidden="true" class="absolute inset-0 flex items-center">
+                    <div class="w-full h-px bg-surface-container-highest"></div>
+                </div>
+            </div>
+            <p class="mt-10 text-center font-body text-sm text-on-surface-variant">
+                ¿Quieres comenzar? 
+                <a class="font-medium text-primary hover:text-primary-container transition-colors ml-1" href="#">Registrarse</a>
+            </p>
+        </div>
+    </div>
+    
+    <div class="hidden lg:flex w-1/2 relative bg-surface-container-low overflow-hidden items-center justify-center">
+        <div class="absolute inset-0 z-0">
+            <img alt="Abstract tech background" class="w-full h-full object-cover opacity-90 mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbddToqdsvVPQNYFxm_TdUM-E6HGsS-HBcgBWTJJkcrvqcC1dSNwaTsa21WStVy_Logwx16AbvfELWUDyzLwb3WScE7_zwuiu0Y0j4XDE2QmgDs0iqsXIdoQH9tyGmzDzUbB1Bfx9E3AwuIwMdGkkTffp0J6Xn8c0SIY3EFFT8BiTrSgQzUnWfHX7gf4R5-Pk-ncAv3xIfcsd1x5dMtrfYBFz2Eh4SZVvPnd4PMd3nBSAmi3GXSQW1RYV1A58ro70PBIfc0yldtfAe"/>
+            <div class="absolute inset-0 bg-linear-to-br from-primary/90 to-primary-container/80 backdrop-blur-[2px]"></div>
+        </div>
+        <div class="relative z-10 p-16 max-w-xl text-on-primary">
+            <div class="flex items-center gap-3 mb-12">
+                <span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">terminal</span>
+                <span class="font-headline font-bold text-3xl tracking-tighter">ETE-Tech</span>
+            </div>
+            <h1 class="font-headline text-5xl font-bold leading-tight mb-6 tracking-tight">Servicios de software confiable y accesible.</h1>
+            <p class="font-body text-primary-fixed-dim text-lg leading-relaxed mb-12">
+                Reparación, mantenimiento e instalación de software para diferentes dispositivos electrónicos como: consolas, teléfonos y computadoras.
+            </p>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="bg-surface-container-lowest/10 backdrop-blur-md p-6 rounded-lg border border-surface-container-lowest/20">
+                    <span class="material-symbols-outlined text-tertiary-fixed-dim mb-3">schedule</span>
+                    <div class="font-headline text-2xl font-bold mb-1">5-10</div>
+                    <div class="font-label text-sm uppercase tracking-wider text-primary-fixed-dim">Días para el servicio.</div>
+                </div>
+                <div class="bg-surface-container-lowest/10 backdrop-blur-md p-6 rounded-lg border border-surface-container-lowest/20">
+                    <span class="material-symbols-outlined text-tertiary-fixed-dim mb-3">groups</span>
+                    <div class="font-headline text-2xl font-bold mb-1">10k+</div>
+                    <div class="font-label text-sm uppercase tracking-wider text-primary-fixed-dim">Clientes satisfechos.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<div class="checkout-container">
+  <div class="checkout-card">
+    <header class="checkout-header">
+      <h1>Resumen de Compra</h1>
+      <p class="subtitle">Revisa tus productos antes de finalizar el pedido</p>
+    </header>
+
+    <div class="checkout-body">
+      <div class="items-list">
+        @for (item of items(); track item.Product_ID) {
+          <div class="checkout-item">
+            <div class="item-info">
+              <span class="item-id">ID: {{ item.Product_ID }}</span>
+              <h3 class="item-name">{{ item.Name }}</h3>
+              <p class="item-price">{{ item.Sale_Price | currency }}</p>
+            </div>
+            <div class="item-qty">
+              <span class="qty-label">Cantidad:</span>
+              <span class="qty-value">{{ item.cantidad }}</span>
+            </div>
+            <div class="item-subtotal">
+              {{ (item.Sale_Price * item.cantidad) | currency }}
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-cart">
+            <p>Tu carrito está vacío</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <footer class="checkout-footer">
+      <div class="total-section">
+        <span class="total-label">Total a pagar:</span>
+        <span class="total-amount">{{ total() | currency }}</span>
+      </div>
+      
+      <div id="paypal-button-container" class="paypal-container"></div>
+      
+      <div *ngIf="successMessage" class="success-alert">
+        <i class="check-icon">✓</i>
+        {{ successMessage }}
+      </div>
+
+      <div *ngIf="items().length === 0 && !successMessage" class="empty-cart-warning">
+        Agrega productos al carrito para continuar con el pago
+      </div>
+    </footer>
+  </div>
+</div>

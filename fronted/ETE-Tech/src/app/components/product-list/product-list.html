@@ -1,19 +1,41 @@
-<section>
-  <h2>Catálogo de Productos</h2>
+<div class="product-list-container">
+  <header class="list-header">
+    <div class="header-content">
+      <h2>Catálogo de Productos</h2>
+      <div class="cart-summary" (click)="irACheckout()">
+        <span class="cart-icon">🛒</span>
+        <span class="cart-count">{{ carritoService.Lista().length }}</span>
+        <span class="cart-total">{{ carritoService.total() | currency }}</span>
+      </div>
+    </div>
+  </header>
 
-  <div class="row">
-    @for (product of products; track product.Product_ID) {
-      <div class="col-md-4 mb-3 producto-Contenedor">
-        <div class="card h-100">
-          <img class="card-img-top imagen-producto" src="{{product.Image}}" alt="{{product.Name}}">
-          <div class="card-body">
-            <h5 class="card-title card-bodyh5">{{product.Name}}</h5>
-            <p class="card-text card-bodyp">{{product.Description}}</p>
-            <p class="card-text card-costo"><strong>$</strong> {{product.Final_Price}}</p>
-            <button class="btn btn-success boton-agregar" (click)="agregarAlCarrito(product)">Agregar al Carrito</button>
-          </div>
+  <div class="products-grid" *ngIf="products.length > 0; else noProducts">
+    <div *ngFor="let product of products" class="col-md-4 mb-3 producto-Contenedor">
+      <div class="card h-100">
+        <img class="card-img-top imagen-producto" src="{{product.Image}}" alt="{{product.Name}}">
+        <div class="card-body">
+          <h5 class="card-title card-bodyh5">{{product.Name}}</h5>
+          <p class="card-text card-bodyp">{{product.Description}}</p>
+          <p class="card-text card-costo"><strong>$</strong> {{product.Final_Price}}</p>
+          <button class="btn btn-success boton-agregar" (click)="agregarAlCarrito(product)">Agregar al Carrito</button>
         </div>
       </div>
-    }
+    </div>
   </div>
-</section>
+  
+  <ng-template #noProducts>
+    <div class="alert alert-info mt-4">
+      No hay productos disponibles en este momento o se están cargando...
+    </div>
+  </ng-template>
+
+
+  <button 
+    *ngIf="carritoService.Lista().length > 0" 
+    class="floating-checkout-btn"
+    (click)="irACheckout()"
+  >
+    Ir a Pagar ({{ carritoService.total() | currency }})
+  </button>
+</div>
