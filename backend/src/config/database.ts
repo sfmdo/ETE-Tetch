@@ -1,7 +1,14 @@
 import dotenv from 'dotenv';
 import mysql from 'mysql2';
+import path from 'path';
 
+<<<<<<< HEAD
 dotenv.config();
+=======
+// Find .env file starting from this file's directory going up to the backend root
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+>>>>>>> 8d6aa06e1cdc20e20fe04c2e5f7543ae73fa11d9
 const requiredVariables: string[] = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME'];
 
 const missingVariables: string[] = requiredVariables.filter(

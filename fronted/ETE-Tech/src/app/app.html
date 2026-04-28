@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <app-top-navbar></app-top-navbar>
 
 <div class="flex h-screen pt-16">
@@ -43,3 +44,14 @@
     <span class="text-[10px] font-bold uppercase">Staff</span>
   </button>
 </nav>
+=======
+<div class="flex h-screen overflow-hidden">
+  
+  <app-side-navbar *ngIf="showNavbar"></app-side-navbar>
+
+  <main class="flex-1 overflow-y-auto bg-surface relative" [ngClass]="{'p-8': showNavbar}">
+    <router-outlet></router-outlet>
+  </main>
+  
+</div>
+>>>>>>> 8d6aa06e1cdc20e20fe04c2e5f7543ae73fa11d9

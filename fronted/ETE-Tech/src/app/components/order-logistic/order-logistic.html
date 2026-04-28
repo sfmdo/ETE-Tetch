@@ -1,0 +1,236 @@
+<main class="min-h-screen pb-24 md:pb-8 bg-surface text-on-surface font-body relative">
+  
+  <div *ngIf="loading" class="flex flex-col items-center justify-center h-[70vh]">
+    <span class="material-symbols-outlined text-5xl text-primary animate-spin">progress_activity</span>
+    <p class="mt-4 text-on-surface-variant font-label text-sm tracking-widest uppercase italic">Cargando detalles...</p>
+  </div>
+
+  <div *ngIf="!loading && order" class="max-w-7xl mx-auto px-6 py-8">
+    
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <a routerLink="/orders" class="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-1 hover:underline cursor-pointer">
+            <span class="material-symbols-outlined text-sm">arrow_back</span> Volver al Listado
+          </a>
+        </div>
+        <h1 class="text-4xl font-black text-primary font-headline tracking-tight">{{ order.Order_Number }}</h1>
+        <p class="text-on-surface-variant text-sm font-medium mt-1">Servicio de Mantenimiento / Reparación</p>
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <div *ngIf="order" class="relative group">
+            <select 
+            [(ngModel)]="order.Logistics_Status" 
+            (ngModelChange)="onStatusChange($event)"
+            class="appearance-none pr-10 pl-6 py-2.5 rounded-full shadow-md text-xs font-black uppercase tracking-[0.15em] border-none focus:ring-4 focus:ring-primary/20 cursor-pointer transition-all hover:scale-105"
+            [ngClass]="getStatusColor(order.Logistics_Status)">
+            <option *ngFor="let status of statusOptions" [value]="status">
+                {{ statusTranslation[status] }}
+            </option>
+            </select>
+  <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-lg pointer-events-none opacity-70">
+    unfold_more
+  </span>
+</div>
+
+        <button (click)="saveDiagnosis()" class="bg-primary text-on-primary px-6 py-2 rounded font-bold text-sm tracking-tight hover:shadow-lg transition-shadow active:scale-95">
+          GUARDAR CAMBIOS
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <div class="lg:col-span-8 space-y-8">
+        
+        <section class="bg-surface-container-low p-1 rounded-xl">
+          <div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div>
+                <h3 class="text-[10px] font-bold uppercase tracking-[0.1em] text-outline mb-6">Identidad del Cliente</h3>
+                <div class="flex items-start gap-4">
+                  <div class="w-12 h-12 rounded bg-primary/5 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-primary">corporate_fare</span>
+                  </div>
+                  <div>
+                    <p class="text-xl font-bold text-primary font-headline">ID Cliente: {{ order.Client_ID }}</p>
+                    <p class="text-on-surface-variant text-sm mt-1">Contacto Registrado</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 class="text-[10px] font-bold uppercase tracking-[0.1em] text-outline mb-6">Perfil del Equipo</h3>
+                <div class="space-y-4">
+                  <div class="flex justify-between items-center border-b border-surface-variant/30 pb-2">
+                    <span class="text-xs font-medium text-on-surface-variant uppercase">Marca / Modelo</span>
+                    <span class="text-sm font-bold text-primary">{{ order.Brand_Model }}</span>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <span class="text-xs font-medium text-on-surface-variant uppercase">Falla Reportada</span>
+                    <p class="text-sm text-primary leading-relaxed">{{ order.Reported_Fault }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="bg-surface-container-low p-8 rounded-xl">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.1em] text-outline mb-8">Ciclo de Servicio</h3>
+          <div class="flex flex-col md:flex-row justify-between relative gap-6">
+            <div class="hidden md:block absolute top-4 left-0 w-full h-[2px] bg-outline-variant/30 -z-0"></div>
+            
+            <div class="relative z-10 flex flex-row md:flex-col items-center gap-4 md:text-center group"
+                 [ngClass]="getStepState('PENDING') === 'pending' ? 'opacity-40' : ''">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                   [ngClass]="getStepState('PENDING') === 'active' ? 'bg-primary text-white ring-4 ring-primary/10' : (getStepState('PENDING') === 'completed' ? 'bg-primary text-white' : 'bg-white border-2 border-outline-variant text-outline')">
+                <span class="material-symbols-outlined text-sm">{{ getStepState('PENDING') === 'completed' ? 'check' : 'inventory_2' }}</span>
+              </div>
+              <div>
+                <p class="text-[10px] font-extrabold uppercase tracking-widest text-primary">PENDIENTE</p>
+                <p class="text-[10px] text-on-surface-variant">{{ order.Created_At | date:'d MMM, hh:mm a' }}</p>
+              </div>
+            </div>
+
+            <div class="relative z-10 flex flex-row md:flex-col items-center gap-4 md:text-center"
+                 [ngClass]="getStepState('IN_PROGRESS') === 'pending' ? 'opacity-40' : ''">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                   [ngClass]="getStepState('IN_PROGRESS') === 'active' ? 'bg-primary text-white ring-4 ring-primary/10' : (getStepState('IN_PROGRESS') === 'completed' ? 'bg-primary text-white' : 'bg-white border-2 border-outline-variant text-outline')">
+                <span class="material-symbols-outlined text-sm">{{ getStepState('IN_PROGRESS') === 'completed' ? 'check' : 'sync' }}</span>
+              </div>
+              <div>
+                <p class="text-[10px] font-extrabold uppercase tracking-widest" [ngClass]="getStepState('IN_PROGRESS') !== 'pending' ? 'text-primary' : 'text-on-surface-variant'">EN CURSO</p>
+                <p class="text-[10px] text-on-surface-variant">Fase Técnica</p>
+              </div>
+            </div>
+
+            <div class="relative z-10 flex flex-row md:flex-col items-center gap-4 md:text-center"
+                 [ngClass]="getStepState('COMPLETED') === 'pending' ? 'opacity-40' : ''">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                   [ngClass]="getStepState('COMPLETED') === 'active' ? 'bg-[#1a8a3d] text-white ring-4 ring-[#1a8a3d]/10' : (getStepState('COMPLETED') === 'completed' ? 'bg-[#1a8a3d] text-white' : 'bg-white border-2 border-outline-variant text-outline')">
+                <span class="material-symbols-outlined text-sm">done_all</span>
+              </div>
+              <div>
+                <p class="text-[10px] font-extrabold uppercase tracking-widest" [ngClass]="getStepState('COMPLETED') !== 'pending' ? 'text-[#1a8a3d]' : 'text-on-surface-variant'">COMPLETADO</p>
+                <p class="text-[10px] text-on-surface-variant">Listo para entrega</p>
+              </div>
+            </div>
+
+            <div class="relative z-10 flex flex-row md:flex-col items-center gap-4 md:text-center"
+                 [ngClass]="getStepState('PAID') === 'pending' ? 'opacity-40' : ''">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                   [ngClass]="getStepState('PAID') === 'active' ? 'bg-secondary text-white ring-4 ring-secondary/10' : (getStepState('PAID') === 'completed' ? 'bg-secondary text-white' : 'bg-white border-2 border-outline-variant text-outline')">
+                <span class="material-symbols-outlined text-sm">payments</span>
+              </div>
+              <div>
+                <p class="text-[10px] font-extrabold uppercase tracking-widest" [ngClass]="getStepState('PAID') !== 'pending' ? 'text-secondary' : 'text-on-surface-variant'">PAGADO</p>
+                <p class="text-[10px] text-on-surface-variant">Finalizado</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="bg-surface-container-low p-1 rounded-xl">
+          <div class="bg-surface-container-lowest p-8 rounded-lg shadow-sm">
+            <div class="flex justify-between items-center mb-8">
+              <h3 class="text-[10px] font-bold uppercase tracking-[0.1em] text-outline">Asignación de Refacciones</h3>
+              <button (click)="openProductModal()" class="text-primary border border-primary/20 px-4 py-1.5 rounded font-bold text-xs flex items-center gap-2 hover:bg-primary hover:text-white transition-all active:scale-95">
+                <span class="material-symbols-outlined text-sm">add_box</span> AGREGAR
+              </button>
+            </div>
+            
+            <div class="py-10 text-center border-2 border-dashed border-surface-container-highest rounded-xl bg-surface-container-low/30">
+               <span class="material-symbols-outlined text-4xl text-outline-variant mb-2">inventory</span>
+               <p class="text-sm font-medium text-on-surface-variant">No hay refacciones asignadas a esta orden.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="bg-surface-container-low p-8 rounded-xl">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.1em] text-outline mb-6">Registro Técnico</h3>
+          <div class="space-y-6">
+            <div>
+              <label class="block text-xs font-bold text-primary uppercase tracking-wider mb-2">Diagnóstico Final</label>
+              <textarea 
+                [(ngModel)]="diagnosisForm.Final_Diagnosis"
+                class="w-full bg-surface-container-lowest border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm p-4 placeholder:text-outline/50 shadow-sm" 
+                placeholder="Ingresa el análisis de la causa raíz..." rows="3"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-primary uppercase tracking-wider mb-2">Solución Aplicada</label>
+              <textarea 
+                [(ngModel)]="diagnosisForm.Applied_Solution"
+                class="w-full bg-surface-container-lowest border-none rounded-lg focus:ring-2 focus:ring-primary/20 text-sm p-4 placeholder:text-outline/50 shadow-sm" 
+                placeholder="Describe los pasos de remediación ejecutados..." rows="3"></textarea>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
+        
+        <section class="bg-primary text-white p-8 rounded-xl shadow-xl shadow-primary/20">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-on-primary-container mb-8">Resumen Financiero</h3>
+          <div class="space-y-6">
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-on-primary-container">Costo Base del Servicio</span>
+              <span class="font-bold">-</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-on-primary-container">Total Refacciones</span>
+              <span class="font-bold">-</span>
+            </div>
+            <div class="h-[1px] bg-on-primary-container/20"></div>
+            <div class="flex justify-between items-end pt-2">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-widest text-on-primary-container">Total de la Orden</p>
+                <p class="text-4xl font-black font-headline tracking-tighter">${{ order.Total_Cost | number:'1.2-2' }}</p>
+              </div>
+              <div class="text-xs text-on-primary-container font-medium">MXN</div>
+            </div>
+          </div>
+          
+          <div class="mt-10 space-y-3">
+            <button class="w-full bg-tertiary-fixed-dim text-primary py-4 rounded font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-transform">
+              <span class="material-symbols-outlined text-sm">receipt_long</span>
+              GENERAR RECIBO
+            </button>
+          </div>
+        </section>
+
+        <section class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
+          <h3 class="text-[10px] font-bold uppercase tracking-[0.1em] text-outline mb-4">Personal Asignado</h3>
+          
+          <div *ngIf="order.Technician_ID" class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined">engineering</span>
+            </div>
+            <div>
+              <p class="text-sm font-bold text-primary">Técnico ID: {{ order.Technician_ID }}</p>
+              <p class="text-[10px] text-on-surface-variant font-medium">Soporte Técnico Especializado</p>
+            </div>
+          </div>
+
+          <div *ngIf="!order.Technician_ID" class="flex flex-col items-center justify-center py-4 bg-surface-container-highest/50 rounded-lg border-2 border-dashed border-outline-variant/30">
+            <p class="text-xs text-on-surface-variant mb-3 font-medium">Nadie atiende esta orden aún.</p>
+            <button (click)="assignToMe()" class="text-xs font-bold text-primary bg-primary/10 hover:bg-primary hover:text-white px-4 py-2 rounded transition-colors flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">person_add</span> Asignarme a esta orden
+            </button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <app-add-product-modal 
+    *ngIf="isProductModalOpen"
+    [orderId]="order?.Order_ID!" 
+    (close)="closeProductModal()" 
+    (productAdded)="onProductAdded()">
+  </app-add-product-modal>
+
+</main>

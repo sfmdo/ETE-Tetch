@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <aside class="hidden md:flex h-screen w-64 flex-col py-8 px-4 space-y-2 bg-slate-50 dark:bg-slate-950 border-r border-slate-200/20 dark:border-slate-800/20 font-manrope text-sm antialiased shrink-0">
   
   <div class="px-2 mb-6">
@@ -8,10 +9,23 @@
       <div>
         <h2 class="font-bold text-lg text-blue-950 dark:text-white leading-tight">ETE-Tech Admin</h2>
         <p class="text-xs text-slate-500">Precision Management</p>
+=======
+<aside class="hidden md:flex h-screen w-64 flex-col py-6 px-4 bg-slate-50 dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 font-manrope text-sm antialiased shrink-0">
+  
+  <div class="px-2 mb-10">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded bg-primary flex items-center justify-center text-on-primary shadow-md">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">precision_manufacturing</span>
+      </div>
+      <div>
+        <h2 class="font-bold text-lg text-blue-950 dark:text-white leading-tight tracking-tighter">ETE-Tech</h2>
+        <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Console</p>
+>>>>>>> 8d6aa06e1cdc20e20fe04c2e5f7543ae73fa11d9
       </div>
     </div>
   </div>
 
+<<<<<<< HEAD
   <button class="w-full py-2.5 px-4 mb-6 bg-primary text-on-primary rounded-md font-semibold text-sm shadow-sm hover:translate-x-1 transition-transform duration-200 active:opacity-80 flex items-center justify-center gap-2">
     <span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
     New Repair Ticket
@@ -55,4 +69,70 @@
       Logout
     </button>
   </div>
+=======
+  <nav class="flex-1 space-y-1">
+    <p class="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Gestión de Sistema</p>
+    
+    <a *ngIf="isAdmin()" routerLink="/orders" 
+      routerLinkActive="bg-blue-50 dark:bg-blue-900/20 text-blue-900 dark:text-blue-400 font-bold border-r-4 border-blue-900 dark:border-blue-400" 
+      class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 group">
+      <span class="material-symbols-outlined group-hover:scale-110 transition-transform">build</span>
+      Órdenes
+    </a>
+
+    <a *ngIf="isAdmin()"
+       routerLink="/inventory" 
+       routerLinkActive="bg-blue-50 dark:bg-blue-900/20 text-blue-900 dark:text-blue-400 font-bold border-r-4 border-blue-900 dark:border-blue-400" 
+       class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 group">
+      <span class="material-symbols-outlined group-hover:scale-110 transition-transform">inventory_2</span>
+      Inventario
+    </a>
+    
+    <a routerLink="/catalog" 
+       routerLinkActive="bg-blue-50 dark:bg-blue-900/20 text-blue-900 dark:text-blue-400 font-bold border-r-4 border-blue-900 dark:border-blue-400" 
+       class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 group">
+      <span class="material-symbols-outlined group-hover:scale-110 transition-transform">auto_stories</span>
+      Catálogo
+    </a>
+
+
+    <a *ngIf="isAdmin()"
+       routerLink="/staff" 
+       routerLinkActive="bg-blue-50 dark:bg-blue-900/20 text-blue-900 dark:text-blue-400 font-bold border-r-4 border-blue-900 dark:border-blue-400" 
+       class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all duration-200 group">
+      <span class="material-symbols-outlined group-hover:scale-110 transition-transform">badge</span>
+      Personal
+    </a>
+  </nav>
+
+  <div class="pt-4 mt-4 border-t border-slate-200 dark:border-slate-800 space-y-1">
+    
+    <button class="w-full flex items-center justify-between px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined">notifications</span>
+        <span>Notificaciones</span>
+      </div>
+      <span *ngIf="hasNotifications" class="flex h-2 w-2 rounded-full bg-error"></span>
+    </button>
+
+    <a routerLink="/settings" class="flex items-center gap-3 px-4 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all">
+      <span class="material-symbols-outlined">settings</span>
+      Configuración
+    </a>
+
+    <div *ngIf="userData" class="mt-4 p-3 bg-slate-100/50 dark:bg-slate-900/50 rounded-xl flex items-center gap-3 border border-slate-200/50 dark:border-slate-800/50">
+      <div class="h-9 w-9 rounded-full overflow-hidden border-2 border-white dark:border-slate-700 shadow-sm shrink-0">
+        <img alt="User profile" [src]="'https://ui-avatars.com/api/?name=' + userData.Full_Name + '&background=002542&color=fff'"/>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs font-bold text-blue-950 dark:text-white truncate">{{ userData.Full_Name }}</p>
+        <p class="text-[10px] text-slate-500 truncate uppercase tracking-tighter">{{ userData.Role }}</p>
+      </div>
+      <button (click)="logout()" class="text-error hover:scale-110 transition-transform" title="Cerrar Sesión">
+        <span class="material-symbols-outlined text-xl">logout</span>
+      </button>
+    </div>
+  </div>
+
+>>>>>>> 8d6aa06e1cdc20e20fe04c2e5f7543ae73fa11d9
 </aside>

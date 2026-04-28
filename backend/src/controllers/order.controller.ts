@@ -160,6 +160,48 @@ class OrderController {
             return res.status(500).json({ error: error.message });
         }
     }
+
+    async getOrderById(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+        const order = await OrderModel.getAll();
+        
+        if (!order) return res.status(404).json({ message: "No Orders found" });
+        
+        return res.json(order);
+    } catch (error: any) {
+        return res.status(500).json({ error: error.message });
+        }
+    }
+
+    async getAllOrders(req: Request, res: Response) {
+        try {
+            const order = await OrderModel.getAll();
+            if (!order) return res.status(404).json({ message: "No order found" });
+            return res.json(order);
+        } catch (error: any) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
+    async getFullOrderDetails(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+        
+            // Obtenemos la cabecera
+            const order = await OrderModel.getById(Number(id));
+            if (!order) return res.status(404).json({ message: "Orden no encontrada" });
+
+            // Obtenemos los productos/servicios asociados desde OrderDetailModel
+            const details = await OrderDetailModel.getByOrderId(Number(id));
+
+            return res.json({
+                ...order,
+                Items: details
+            });
+        } catch (error: any) {
+            return res.status(500).json({ error: error.message });
+        }
+    }
 }
 
 export default new OrderController();

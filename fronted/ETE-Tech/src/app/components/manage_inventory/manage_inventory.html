@@ -1,0 +1,367 @@
+<div class="p-6 max-w-7xl mx-auto">
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-800">
+        Products & Services
+      </h1>
+      <p class="text-slate-500 mt-1">
+        Administra productos y servicios del catálogo.
+      </p>
+    </div>
+
+    <div class="flex gap-3 items-center">
+      <select
+        [(ngModel)]="filter"
+        (change)="loadProducts()"
+        class="border border-slate-300 rounded-lg px-4 py-2 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        <option value="ALL">Todos</option>
+        <option value="PRODUCT">Solo productos</option>
+        <option value="SERVICE">Solo servicios</option>
+      </select>
+
+      <button
+        type="button"
+        (click)="resetForm()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow"
+      >
+        Nuevo registro
+      </button>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div
+    *ngIf="successMessage"
+    class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700"
+  >
+    {{ successMessage }}
+  </div>
+
+  <div
+    *ngIf="errorMessage"
+    class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700"
+  >
+    {{ errorMessage }}
+  </div>
+
+  <!-- Main Layout -->
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+    <!-- Form -->
+    <div class="xl:col-span-1 bg-white rounded-2xl shadow border border-slate-200 p-6">
+
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-xl font-semibold text-slate-800">
+          {{ isEditing ? 'Editar registro' : 'Nuevo registro' }}
+        </h2>
+
+        <span
+          *ngIf="isEditing"
+          class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full"
+        >
+          Editando
+        </span>
+      </div>
+
+      <div class="space-y-4">
+
+        <div>
+          <label class="block text-sm font-medium text-slate-600 mb-1">
+            SKU
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="form.SKU_Code"
+            class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="COMP-001"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-600 mb-1">
+            Nombre
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="form.Name"
+            class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Wireless Mouse"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-600 mb-1">
+            Descripción
+          </label>
+          <textarea
+            [(ngModel)]="form.Description"
+            rows="3"
+            class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Descripción del producto o servicio"
+          ></textarea>
+        </div>
+
+        <div>
+  <label class="block text-sm font-medium text-slate-600 mb-1">
+    Categoría
+  </label>
+  
+  <select
+    [(ngModel)]="categorySelection"
+    (change)="onCategoryChange()"
+    class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
+  >
+    <option value="Servicio">Servicio</option>
+    <option value="Mantenimiento">Mantenimiento</option>
+    <option value="OTRA">Otra (Escribir debajo...)</option>
+  </select>
+
+  <input
+    *ngIf="categorySelection === 'OTRA'"
+    type="text"
+    [(ngModel)]="form.Category"
+    class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 animate-in fade-in duration-300"
+    placeholder="Escribe la nueva categoría..."
+  />
+</div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-600 mb-1">
+            Tipo
+          </label>
+          <select
+            [(ngModel)]="form.Item_Type"
+            (change)="onItemTypeChange()"
+            class="w-full border border-slate-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="PRODUCT">PRODUCT</option>
+            <option value="SERVICE">SERVICE</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">
+              Cost Price
+            </label>
+            <input
+              type="number"
+              [(ngModel)]="form.Cost_Price"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2"
+              placeholder="0.00"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">
+              Sale Price
+            </label>
+            <input
+              type="number"
+              [(ngModel)]="form.Sale_Price"
+              (input)="calculateFinalPrice()"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">
+              Tax Rate
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              [(ngModel)]="form.Tax_Rate"
+              (input)="calculateFinalPrice()"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">
+              Final Price
+            </label>
+            <input
+              type="number"
+              [value]="form.Final_Price"
+              readonly
+              class="w-full border border-slate-200 bg-slate-100 rounded-lg px-3 py-2 text-green-700 font-semibold"
+            />
+          </div>
+        </div>
+
+        <div
+          *ngIf="form.Item_Type === 'PRODUCT'"
+          class="grid grid-cols-2 gap-3"
+        >
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">
+              Stock Actual
+            </label>
+            <input
+              type="number"
+              [(ngModel)]="form.Current_Stock"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">
+              Stock Mínimo
+            </label>
+            <input
+              type="number"
+              [(ngModel)]="form.Minimum_Stock"
+              class="w-full border border-slate-300 rounded-lg px-3 py-2"
+            />
+          </div>
+        </div>
+
+        <div *ngIf="form.Item_Type === 'SERVICE'">
+          <div class="rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-700">
+            Los servicios utilizan automáticamente stock 0.
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-600 mb-1">
+            Imagen
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="form.Image"
+            class="w-full border border-slate-300 rounded-lg px-3 py-2"
+            placeholder="URL o base64"
+          />
+        </div>
+
+        <div class="flex gap-3 pt-3">
+          <button
+            type="button"
+            (click)="save()"
+            [disabled]="loading"
+            class="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white py-2.5 rounded-lg font-medium shadow"
+          >
+            {{ isEditing ? 'Actualizar' : 'Guardar' }}
+          </button>
+
+          <button
+            type="button"
+            (click)="resetForm()"
+            class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2.5 rounded-lg font-medium"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="xl:col-span-2 bg-white rounded-2xl shadow border border-slate-200 overflow-hidden">
+
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+        <h2 class="text-xl font-semibold text-slate-800">
+          Lista de registros
+        </h2>
+
+        <span class="text-sm text-slate-500">
+          {{ products.length }} registros
+        </span>
+      </div>
+
+      <div *ngIf="loading" class="p-6 text-center text-slate-500">
+        Cargando...
+      </div>
+
+      <div *ngIf="!loading && products.length === 0" class="p-6 text-center text-slate-500">
+        No hay registros disponibles.
+      </div>
+
+      <div *ngIf="!loading && products.length > 0" class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-slate-100 text-slate-700">
+            <tr>
+              <th class="px-4 py-3 text-left">SKU</th>
+              <th class="px-4 py-3 text-left">Nombre</th>
+              <th class="px-4 py-3 text-left">Tipo</th>
+              <th class="px-4 py-3 text-left">Precio</th>
+              <th class="px-4 py-3 text-left">Final</th>
+              <th class="px-4 py-3 text-left">Stock</th>
+              <th class="px-4 py-3 text-center">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              *ngFor="let item of products"
+              class="border-t border-slate-200 hover:bg-slate-50 transition"
+            >
+              <td class="px-4 py-3 font-medium text-slate-700">
+                {{ item.SKU_Code }}
+              </td>
+
+              <td class="px-4 py-3">
+                <div class="font-medium text-slate-800">
+                  {{ item.Name }}
+                </div>
+                <div class="text-xs text-slate-500">
+                  {{ item.Category }}
+                </div>
+              </td>
+
+              <td class="px-4 py-3">
+                <span
+                  class="px-2 py-1 rounded-full text-xs font-semibold"
+                  [ngClass]="{
+                    'bg-green-100 text-green-700': item.Item_Type === 'PRODUCT',
+                    'bg-purple-100 text-purple-700': item.Item_Type === 'SERVICE'
+                  }"
+                >
+                  {{ item.Item_Type }}
+                </span>
+              </td>
+
+              <td class="px-4 py-3">
+                ${{ item.Sale_Price | number:'1.2-2' }}
+              </td>
+
+              <td class="px-4 py-3 font-semibold text-green-700">
+                ${{ item.Final_Price | number:'1.2-2' }}
+              </td>
+
+              <td class="px-4 py-3">
+                {{ item.Current_Stock }}
+              </td>
+
+              <td class="px-4 py-3">
+                <div class="flex justify-center gap-2">
+                  <button
+                    type="button"
+                    (click)="edit(item)"
+                    class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium"
+                  >
+                    Editar
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="remove(item)"
+                    class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

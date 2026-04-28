@@ -1,0 +1,112 @@
+<div class="flex h-screen w-screen overflow-hidden bg-surface text-on-surface font-body">
+  
+  <div class="hidden lg:flex w-1/2 relative overflow-hidden items-center justify-center bg-primary">
+    <div class="absolute inset-0 z-0">
+      <img alt="Fondo tecnológico" 
+           class="w-full h-full object-cover opacity-20 mix-blend-overlay" 
+           src="https://images.unsplash.com/photo-1581092334651-ddf26d9a1930?auto=format&fit=crop&q=80"/>
+      <div class="absolute inset-0 bg-gradient-to-br from-primary/95 to-primary-container/90"></div>
+    </div>
+    
+    <div class="relative z-10 p-16 max-w-2xl text-on-primary">
+      <div class="flex items-center gap-3 mb-12 opacity-80">
+        <span class="material-symbols-outlined text-3xl">precision_manufacturing</span>
+        <span class="font-headline font-black tracking-tighter text-xl uppercase">ETE-Tech</span>
+      </div>
+      
+      <h1 class="font-headline text-6xl font-extrabold leading-tight mb-8 tracking-tight">
+        Precisión <br/>Arquitectónica.
+      </h1>
+      
+      <p class="text-primary-fixed-dim text-lg leading-relaxed mb-16 max-w-lg opacity-90">
+        Acceda a la base estructural de sus operaciones de reparación. Seguro, estable y diseñado para la gestión técnica de alto nivel.
+      </p>
+      
+      <div class="flex gap-12">
+        <div class="flex flex-col gap-1">
+          <span class="font-headline text-4xl font-bold">99.9%</span>
+          <span class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-60">Uptime SLA</span>
+        </div>
+        <div class="w-px bg-white/20 h-12"></div>
+        <div class="flex flex-col gap-1">
+          <span class="font-headline text-4xl font-bold">Encriptado</span>
+          <span class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-60">Punta a Punta</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-surface relative overflow-y-auto">
+    <div class="w-full max-w-md">
+      
+      <div class="lg:hidden flex items-center gap-2 mb-12 text-primary">
+        <span class="material-symbols-outlined text-2xl">precision_manufacturing</span>
+        <span class="font-headline font-black tracking-tighter text-lg uppercase">ETE-Tech</span>
+      </div>
+
+      <div class="mb-10">
+        <h2 class="font-headline text-4xl font-bold tracking-tight text-on-surface mb-3">Autorización</h2>
+        <p class="text-on-surface-variant text-base">Crea tus credenciales administrativas para acceder a la consola.</p>
+      </div>
+
+      <div *ngIf="errorMessage" class="mb-6 p-4 bg-error/10 border-l-4 border-error text-error text-sm rounded-r animate-in fade-in slide-in-from-top-2">
+        {{ errorMessage }}
+      </div>
+
+      <form class="space-y-6" (ngSubmit)="onRegister()">
+        
+        <div class="relative group">
+          <label class="block font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Nombre Completo</label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-4 text-outline-variant group-focus-within:text-primary transition-colors">person</span>
+            <input class="tech-input w-full bg-surface-container-low text-on-surface pl-12 pr-4 py-4 rounded focus:bg-white transition-all outline-none border-b-2 border-transparent focus:border-primary" 
+                   name="Full_Name" [(ngModel)]="formData.Full_Name" placeholder="Ingresa tu nombre completo" required/>
+          </div>
+        </div>
+
+        <div class="relative group">
+          <label class="block font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Correo Oficial</label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-4 text-outline-variant group-focus-within:text-primary transition-colors">mail</span>
+            <input class="tech-input w-full bg-surface-container-low text-on-surface pl-12 pr-4 py-4 rounded focus:bg-white transition-all outline-none border-b-2 border-transparent focus:border-primary" 
+                   name="Email" [(ngModel)]="formData.Email" placeholder="nombre@organizacion.com" required type="email"/>
+          </div>
+        </div>
+
+        <div class="relative group">
+          <label class="block font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Número de Contacto</label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-4 text-outline-variant group-focus-within:text-primary transition-colors">call</span>
+            <input class="tech-input w-full bg-surface-container-low text-on-surface pl-12 pr-4 py-4 rounded focus:bg-white transition-all outline-none border-b-2 border-transparent focus:border-primary" 
+                   name="Phone" [(ngModel)]="formData.Phone" placeholder="+1 (555) 000-0000" required type="tel"/>
+          </div>
+        </div>
+
+        <div class="relative group">
+          <label class="block font-label text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Clave de Seguridad</label>
+          <div class="relative flex items-center">
+            <span class="material-symbols-outlined absolute left-4 text-outline-variant group-focus-within:text-primary transition-colors">lock</span>
+            <input class="tech-input w-full bg-surface-container-low text-on-surface pl-12 pr-4 py-4 rounded focus:bg-white transition-all outline-none border-b-2 border-transparent focus:border-primary" 
+                   name="Password" [(ngModel)]="formData.Password" placeholder="••••••••••••" required type="password"/>
+          </div>
+        </div>
+
+        <button [disabled]="loading" 
+                class="w-full bg-primary text-on-primary hover:bg-primary-container font-headline font-bold text-base py-4 rounded-md transition-all duration-300 shadow-xl shadow-primary/20 hover:shadow-primary/40 active:scale-[0.98] disabled:opacity-50 mt-4" 
+                type="submit">
+          {{ loading ? 'INICIALIZANDO...' : 'INICIALIZAR CUENTA' }}
+        </button>
+      </form>
+      
+      <div class="mt-12 text-center py-6 border-t border-outline-variant/30">
+        <p class="font-body text-sm text-on-surface-variant">
+          ¿Credenciales establecidas? 
+          <a class="font-bold text-primary hover:text-primary-container transition-colors ml-1 inline-flex items-center gap-1 group" routerLink="/login">
+            Autenticarse
+            <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

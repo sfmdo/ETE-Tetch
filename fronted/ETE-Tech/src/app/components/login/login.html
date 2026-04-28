@@ -1,0 +1,86 @@
+<div class="flex h-screen w-screen overflow-hidden bg-surface text-on-surface font-body">
+  
+  <div class="hidden lg:flex w-1/2 relative overflow-hidden items-center justify-center bg-surface-container-low">
+    <div class="absolute inset-0 z-0">
+      <img alt="Abstract tech background"
+        class="w-full h-full object-cover opacity-90"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbddToqdsvVPQNYFxm_TdUM-E6HGsS-HBcgBWTJJkcrvqcC1dSNwaTsa21WStVy_Logwx16AbvfELWUDyzLwb3WScE7_zwuiu0Y0j4XDE2QmgDs0iqsXIdoQH9tyGmzDzUbB1Bfx9E3AwuIwMdGkkTffp0J6Xn8c0SIY3EFFT8BiTrSgQzUnWfHX7gf4R5-Pk-ncAv3xIfcsd1x5dMtrfYBFz2Eh4SZVvPnd4PMd3nBSAmi3GXSQW1RYV1A58ro70PBIfc0yldtfAe"/>
+      <div class="absolute inset-0 bg-gradient-to-br from-primary/90 to-primary-container/80 backdrop-blur-[2px]"></div>
+    </div>
+    
+    <div class="relative z-10 p-16 max-w-xl text-on-primary">
+      <div class="flex items-center gap-3 mb-12">
+        <span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">developer_board</span>
+        <span class="font-headline font-bold text-3xl tracking-tighter">ETE-Tech</span>
+      </div>
+      
+      <h1 class="font-headline text-5xl font-bold leading-tight mb-6 tracking-tight">Servicios de software confiable y accesible.</h1>
+      <p class="text-primary-fixed-dim text-lg leading-relaxed mb-12">
+        Reparación, mantenimiento e instalación de software para diferentes dispositivos electrónicos como: consolas, teléfonos y computadoras.
+      </p>
+      
+      <div class="grid grid-cols-2 gap-6">
+        <div class="bg-surface-container-lowest/10 backdrop-blur-md p-6 rounded-lg border border-surface-container-lowest/20">
+          <span class="material-symbols-outlined text-tertiary-fixed-dim block mb-3">schedule</span>
+          <div class="font-headline text-2xl font-bold mb-1">5-10</div>
+          <div class="text-sm uppercase tracking-wider text-primary-fixed-dim">Días para entregar.</div>
+        </div>
+        <div class="bg-surface-container-lowest/10 backdrop-blur-md p-6 rounded-lg border border-surface-container-lowest/20">
+          <span class="material-symbols-outlined text-tertiary-fixed-dim block mb-3">verified_user</span>
+          <div class="font-headline text-2xl font-bold mb-1">10k+</div>
+          <div class="text-sm uppercase tracking-wider text-primary-fixed-dim">Clientes Satisfechos.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-surface relative overflow-y-auto">
+    <div class="w-full max-w-md">
+      <div class="mb-10">
+        <h2 class="font-headline text-3xl font-bold tracking-tight text-on-surface mb-2">Bienvenido</h2>
+        <p class="text-on-surface-variant">Inicia sesión para ingresar a tu cuenta.</p>
+      </div>
+
+      <div *ngIf="errorMessage"
+        class="p-4 mb-4 text-sm text-white bg-error rounded-lg animate-pulse"
+        role="alert">
+        {{ errorMessage }}
+      </div>
+
+      <form class="space-y-6" (ngSubmit)="login()" #loginForm="ngForm">
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-on-surface" for="email">Correo Electrónico</label>
+          <div class="relative group">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">mail</span>
+            <input
+              class="w-full pl-11 pr-4 py-3 bg-surface-container-low text-on-surface border-0 border-b-2 border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all outline-none rounded-t"
+              id="email" name="email" [(ngModel)]="email"
+              placeholder="admin@ete-tech.com" required type="email"/>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-on-surface" for="password">Contraseña</label>
+          <div class="relative group">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">lock</span>
+            <input
+              class="w-full pl-11 pr-11 py-3 bg-surface-container-low text-on-surface border-0 border-b-2 border-transparent focus:bg-white focus:border-primary focus:ring-0 transition-all outline-none rounded-t"
+              id="password" name="password" [(ngModel)]="password"
+              placeholder="••••••••" required type="password"/>
+          </div>
+        </div>
+
+        <button
+          class="w-full py-3 px-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-medium rounded shadow-md hover:shadow-lg hover:-translate-y-px transition-all active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          type="submit">
+          Iniciar Sesión
+        </button>
+      </form>
+
+      <p class="mt-10 text-center text-sm text-on-surface-variant">
+        ¿Quieres comenzar?
+        <a class="font-medium text-primary hover:text-primary-container transition-colors ml-1" routerLink="/register">Registrarse</a>
+      </p>
+    </div>
+  </div>
+</div>

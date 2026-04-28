@@ -95,24 +95,24 @@
 <!-- Brand Content -->
 <div class="relative z-10 p-16 max-w-xl text-on-primary">
 <div class="flex items-center gap-3 mb-12">
-<span class="material-symbols-outlined text-4xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">developer_board</span>
+<span class="material-symbols-outlined text-4xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;"></span>
 <span class="font-headline font-bold text-3xl tracking-tighter">ETE-Tech</span>
 </div>
-<h1 class="font-headline text-5xl font-bold leading-tight mb-6 tracking-tight">Precision Hardware Management.</h1>
+<h1 class="font-headline text-5xl font-bold leading-tight mb-6 tracking-tight">Servicios de software confiable y accesible.</h1>
 <p class="font-body text-primary-fixed-dim text-lg leading-relaxed mb-12">
-                Streamline your inventory, manage complex repairs, and orchestrate your technical workforce with absolute clarity.
+                Reparacion, mantenimiento e instalacion de software para diferentes dispositivos electronicos como: consolas, telefonos y computadoras.
             </p>
 <!-- Testimonial/Metric Grid -->
 <div class="grid grid-cols-2 gap-6">
 <div class="bg-surface-container-lowest/10 backdrop-blur-md p-6 rounded-lg border border-surface-container-lowest/20">
-<span class="material-symbols-outlined text-tertiary-fixed-dim mb-3">speed</span>
-<div class="font-headline text-2xl font-bold mb-1">99.9%</div>
-<div class="font-label text-sm uppercase tracking-wider text-primary-fixed-dim">Uptime SLA</div>
+<span class="material-symbols-outlined text-tertiary-fixed-dim mb-3">Tiempo</span>
+<div class="font-headline text-2xl font-bold mb-1">5-10</div>
+<div class="font-label text-sm uppercase tracking-wider text-primary-fixed-dim">Dias para entregar el servicio.</div>
 </div>
 <div class="bg-surface-container-lowest/10 backdrop-blur-md p-6 rounded-lg border border-surface-container-lowest/20">
-<span class="material-symbols-outlined text-tertiary-fixed-dim mb-3">inventory_2</span>
+<span class="material-symbols-outlined text-tertiary-fixed-dim mb-3">Clientes satisfechos</span>
 <div class="font-headline text-2xl font-bold mb-1">10k+</div>
-<div class="font-label text-sm uppercase tracking-wider text-primary-fixed-dim">Assets Tracked</div>
+<div class="font-label text-sm uppercase tracking-wider text-primary-fixed-dim">en toda la republica.</div>
 </div>
 </div>
 </div>
@@ -121,57 +121,59 @@
 <div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-surface relative overflow-y-auto">
 <!-- Mobile Brand (Hidden on Desktop) -->
 <div class="absolute top-8 left-8 lg:hidden flex items-center gap-2">
-<span class="material-symbols-outlined text-2xl text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">developer_board</span>
+<span class="material-symbols-outlined text-2xl text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">mimimimimi</span>
 <span class="font-headline font-bold text-xl tracking-tighter text-primary">ETE-Tech</span>
 </div>
 <div class="w-full max-w-md">
 <!-- Header -->
 <div class="mb-10">
-<h2 class="font-headline text-3xl font-bold tracking-tight text-on-surface mb-2">Welcome Back</h2>
-<p class="font-body text-on-surface-variant">Sign in to access your administrative dashboard.</p>
+<h2 class="font-headline text-3xl font-bold tracking-tight text-on-surface mb-2">Bienvenido</h2>
+<p class="font-body text-on-surface-variant">Inicia sesion para ingresar a tu cuenta.</p>
 </div>
 <!-- Form -->
-<form class="space-y-6">
+<form class="space-y-6" (ngSubmit)="login()" #loginForm="ngForm">
+<div *ngIf="errorMessage" class="p-4 mb-4 text-sm text-on-error bg-error rounded-lg" role="alert">
+  {{ errorMessage }}
+</div>
 <!-- Email Input -->
 <div class="space-y-2">
-<label class="block font-label text-sm font-medium text-on-surface" for="email">Work Email</label>
+<label class="block font-label text-sm font-medium text-on-surface" for="email">Correo Electronico</label>
 <div class="relative group">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary transition-colors">mail</span>
-<input class="w-full pl-11 pr-4 py-3 bg-surface-container-low text-on-surface font-body border-0 border-b-2 border-transparent focus:bg-surface-container-lowest focus:border-primary focus:ring-0 transition-all rounded-t-DEFAULT" id="email" name="email" placeholder="admin@ete-tech.com" required="" type="email"/>
+<input class="w-full pl-11 pr-4 py-3 bg-surface-container-low text-on-surface font-body border-0 border-b-2 border-transparent focus:bg-surface-container-lowest focus:border-primary focus:ring-0 transition-all rounded-t-DEFAULT" id="email" name="email" [(ngModel)]="email" placeholder="admin@ete-tech.com" required="" type="email"/>
 </div>
 </div>
 <!-- Password Input -->
 <div class="space-y-2">
 <div class="flex justify-between items-center">
-<label class="block font-label text-sm font-medium text-on-surface" for="password">Password</label>
-<a class="font-label text-sm font-medium text-primary hover:text-primary-container transition-colors" href="#">Forgot Password?</a>
+<label class="block font-label text-sm font-medium text-on-surface" for="password">Contraseña</label>
 </div>
 <div class="relative group">
 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary transition-colors">lock</span>
-<input class="w-full pl-11 pr-11 py-3 bg-surface-container-low text-on-surface font-body border-0 border-b-2 border-transparent focus:bg-surface-container-lowest focus:border-primary focus:ring-0 transition-all rounded-t-DEFAULT" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<input class="w-full pl-11 pr-11 py-3 bg-surface-container-low text-on-surface font-body border-0 border-b-2 border-transparent focus:bg-surface-container-lowest focus:border-primary focus:ring-0 transition-all rounded-t-DEFAULT" id="password" name="password" [(ngModel)]="password" placeholder="••••••••" required="" type="password"/>
 <button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-on-surface transition-colors focus:outline-none" type="button">
 <span class="material-symbols-outlined text-xl">visibility_off</span>
 </button>
 </div>
 </div>
+<!-- Remember Me -->
+<div class="flex items-center">
 </div>
 <!-- Submit Button -->
 <button class="w-full py-3 px-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-label font-medium rounded-DEFAULT shadow-[0_4px_12px_rgba(25,28,29,0.15)] hover:shadow-[0_6px_16px_rgba(25,28,29,0.2)] hover:-translate-y-[1px] transition-all active:translate-y-0 active:shadow-none focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface" type="submit">
-                    Sign In to Dashboard
-                </button>
+                    Inicar Sesion 
+</button>
 </form>
 <!-- Divider -->
 <div class="my-8 relative">
 <div aria-hidden="true" class="absolute inset-0 flex items-center">
 <div class="w-full h-px bg-surface-container-highest"></div>
 </div>
-<div class="relative flex justify-center text-sm">
-</div>
 </div>
 <!-- Registration Link -->
 <p class="mt-10 text-center font-body text-sm text-on-surface-variant">
-                New to ETE-Tech? 
-                <a class="font-medium text-primary hover:text-primary-container transition-colors ml-1" href="#">Request Account Access</a>
+                ¿Quieres comenzar? 
+                <a class="font-medium text-primary hover:text-primary-container transition-colors ml-1" href="#">Registrarse</a>
 </p>
 </div>
 </div>
