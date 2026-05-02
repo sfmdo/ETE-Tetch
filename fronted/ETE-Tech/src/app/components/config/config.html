@@ -1,0 +1,93 @@
+<div class="flex-1 md:ml-64 flex flex-col min-h-screen bg-surface">
+    <!-- Content Area -->
+    <div class="p-8 lg:p-12 max-w-5xl w-full mx-auto space-y-10">
+        <!-- Page Header -->
+        <section class="space-y-2">
+            <h2 class="text-4xl font-extrabold font-manrope tracking-tight text-primary">Configuración de Usuario</h2>
+            <p class="text-on-surface-variant max-w-2xl leading-relaxed">Administra la información personal, los detalles de contacto y las preferencias de seguridad de la plataforma.</p>
+        </section>
+
+        <!-- Status Message -->
+        <div *ngIf="mensaje" [ngClass]="error ? 'bg-error-container text-on-error-container' : 'bg-primary-container text-on-primary-container'" class="p-4 rounded-lg transition-all animate-pulse">
+            {{ mensaje }}
+        </div>
+
+        <!-- Simplified Layout Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Main Configuration Form -->
+            <div class="lg:col-span-8 space-y-8">
+                <div class="bg-surface-container-lowest rounded-xl p-8 shadow-sm border border-outline-variant/10">
+                    <div class="flex items-center justify-between mb-8">
+                        <h4 class="font-manrope font-bold text-2xl text-primary">Información Personal</h4>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant bg-surface-container-high px-2 py-1 rounded">API Spec 2.2</span>
+                    </div>
+                    
+                    <form (submit)="guardarCambios(); $event.preventDefault()" class="space-y-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Editable Field -->
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">Nombre del Usuario</label>
+                                <div class="relative">
+                                    <input 
+                                        name="fullName"
+                                        [(ngModel)]="configuracion.Full_Name"
+                                        class="w-full bg-surface-container-low border-none focus:ring-0 focus:bg-surface-container-lowest border-b-2 border-transparent focus:border-primary px-0 py-3 text-on-surface font-medium transition-all" 
+                                        type="text" 
+                                        placeholder="Nombre completo"
+                                    />
+                                </div>
+                            </div>
+                            
+                            <!-- Editable Field -->
+                            <div class="space-y-2">
+                                <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">Número de Teléfono</label>
+                                <div class="relative">
+                                    <input 
+                                        name="phone"
+                                        [(ngModel)]="configuracion.Phone"
+                                        class="w-full bg-surface-container-low border-none focus:ring-0 focus:bg-surface-container-lowest border-b-2 border-transparent focus:border-primary px-0 py-3 text-on-surface font-medium transition-all" 
+                                        type="tel" 
+                                        placeholder="Teléfono"
+                                    />
+                                </div>
+                            </div>
+
+                            <!-- Read Only Field -->
+                            <div class="space-y-2 opacity-80 col-span-2">
+                                <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">Dirección de Correo Electrónico</label>
+                                <div class="flex items-center justify-between py-3 bg-surface-container-low/50 px-4 rounded-lg">
+                                    <span class="text-on-surface font-medium">{{ configuracion.Email }}</span>
+                                    <span class="material-symbols-outlined text-on-surface-variant text-sm">lock</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-8 flex flex-col sm:flex-row gap-4 justify-end border-t border-outline-variant/10">
+                            <button (click)="loadUserConfig()" class="px-8 py-3 rounded text-primary font-bold text-sm hover:bg-surface-container-high transition-colors" type="button">
+                                Cancelar
+                            </button>
+                            <button class="px-10 py-3 rounded bg-primary text-on-primary font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95 bg-gradient-to-br from-primary to-primary-container" type="submit">
+                                Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Security Sidebar Column -->
+            <div class="lg:col-span-4 space-y-8">
+                <div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/10">
+                    <h4 class="font-manrope font-bold text-lg mb-4 flex items-center gap-2 text-primary">
+                        <span class="material-symbols-outlined">lock</span>
+                        Seguridad
+                    </h4>
+                    <p class="text-sm text-on-surface-variant mb-6 leading-snug">Asegura tu cuenta con actualizaciones regulares de credenciales.</p>
+                    <button (click)="cambiarPassword()" class="w-full flex items-center justify-between px-4 py-3 bg-surface-container-low hover:bg-surface-container-high rounded-lg transition-colors group">
+                        <span class="text-sm font-semibold text-primary">Cambiar contraseña</span>
+                        <span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

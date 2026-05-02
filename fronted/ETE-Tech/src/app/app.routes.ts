@@ -11,6 +11,7 @@ import { OrderLogisticComponent } from './components/order-logistic/order-logist
 // Componentes Locales
 import { Dashbord } from './components/dashbord/dashbord';
 import { Carrito } from './components/carrito/carrito';
+import { Config } from './components/config/config';
 
 export const routes: Routes = [
   // 1. Ruta inicial → catalog (el guard redirige a login si no hay sesión)
@@ -38,6 +39,11 @@ export const routes: Routes = [
   { 
     path: 'carrito', 
     component: Carrito,
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'settings', 
+    component: Config,
     canActivate: [authGuard]
   },
 
