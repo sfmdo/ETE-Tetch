@@ -8,6 +8,10 @@ import { InventoryComponent } from './components/inventory/inventory';
 import { OrdersComponent } from './components/orders/orders';
 import { OrderLogisticComponent } from './components/order-logistic/order-logistic';
 
+// Componentes Locales
+import { Dashbord } from './components/dashbord/dashbord';
+import { Carrito } from './components/carrito/carrito';
+
 export const routes: Routes = [
   // 1. Ruta inicial: Si no hay nada, intentamos ir a productos (el guard decidirá si nos manda al login)
   { 
@@ -55,10 +59,14 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { role: 'Admin' }
   },
+  
+  // Rutas Locales
+  { path: 'dashboard', component: Dashbord },
+  { path: 'carrito', component: Carrito },
 
   // 4. Ruta comodín: Cualquier otra cosa redirige a catalogo
   { 
     path: '**', 
-    redirectTo: 'catalog' 
+    redirectTo: 'dashboard' 
   }
 ];
