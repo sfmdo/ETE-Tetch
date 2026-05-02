@@ -1,0 +1,121 @@
+<div class="flex-1 overflow-y-auto pt-16 md:pt-0 pb-8 px-4 md:px-12 bg-surface h-full">
+  <div class="max-w-7xl mx-auto mt-8 flex flex-col lg:flex-row gap-8">
+    <!-- Left Column: Active Repairs & History -->
+    <div class="flex-grow space-y-12">
+        <!-- Welcome Header -->
+        <header>
+            <h1 class="font-headline text-4xl font-bold tracking-tight text-primary mb-2">
+              Bienvenido de vuelta<span *ngIf="userName">, {{ userName }}</span>.
+            </h1>
+            <p class="text-on-surface-variant text-lg">Aquí está el estado de tus servicios.</p>
+        </header>
+
+        <!-- Active Repairs Section -->
+        <section class="bg-surface-container-low rounded-xl p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-headline text-2xl font-semibold text-primary">Reparaciones Activas</h2>
+                <span class="text-xs tracking-wider uppercase font-semibold text-on-surface-variant">{{ activeRepairs.length }} Equipos</span>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Dynamic Repair Items -->
+                <div *ngFor="let repair of activeRepairs" class="bg-surface-container-lowest rounded-lg p-6 flex flex-col md:flex-row items-start md:items-center justify-between hover:bg-surface-container-high transition-colors">
+                    <div class="flex-grow pr-6">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <span class="bg-surface-container-highest px-3 py-1 rounded-full flex items-center text-xs font-semibold uppercase tracking-wide">
+                                <span class="w-1.5 h-1.5 rounded-full mr-2" [ngClass]="repair.statusColorClass"></span>
+                                {{ repair.status }}
+                            </span>
+                            <span class="text-sm text-outline font-mono">{{ repair.id }}</span>
+                        </div>
+                        <h3 class="font-headline text-lg font-bold text-primary mb-1">{{ repair.deviceName }}</h3>
+                        <p class="text-sm text-on-surface-variant">{{ repair.description }}</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 whitespace-nowrap flex space-x-3">
+                        <button class="bg-primary text-on-primary px-4 py-2 rounded text-sm font-medium hover:bg-primary-container transition-colors">
+                            Ver detalles
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Historial de Servicios -->
+        <section class="bg-surface-container-low rounded-xl p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-headline text-2xl font-semibold text-primary">Historial de Servicios</h2>
+                <button class="text-sm text-primary font-medium hover:underline">Ver Todos</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="text-xs uppercase tracking-wide text-on-surface-variant border-b border-surface-container-high">
+                        <tr>
+                            <th class="pb-3 font-medium">Orden</th>
+                            <th class="pb-3 font-medium">Servicio</th>
+                            <th class="pb-3 font-medium">Fecha</th>
+                            <th class="pb-3 font-medium text-right">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-surface-container-high text-on-surface">
+                        <tr *ngFor="let repair of completedRepairs" class="hover:bg-surface-container-lowest transition-colors">
+                            <td class="py-4 font-mono text-outline">{{ repair.id }}</td>
+                            <td class="py-4 font-medium">{{ repair.deviceName }}</td>
+                            <td class="py-4 text-on-surface-variant">{{ repair.completedDate || '—' }}</td>
+                            <td class="py-4 text-right">
+                                <span class="inline-flex items-center gap-1 text-green-700 bg-green-50 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                    Completado
+                                </span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="completedRepairs.length === 0">
+                            <td colspan="4" class="py-8 text-center text-on-surface-variant text-sm">Sin servicios completados aún.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Right Column: Pending Payments & Actions -->
+    <aside class="w-full lg:w-80 flex-shrink-0 space-y-6">
+        <!-- Pending Payments Card -->
+        <div class="bg-surface-container-highest rounded-xl p-6 relative overflow-hidden">
+            <!-- Subtle background decorative element -->
+            <div class="absolute -right-10 -top-10 text-primary opacity-5 transform rotate-12 pointer-events-none">
+                <span class="material-symbols-outlined" style="font-size: 150px;">receipt_long</span>
+            </div>
+            <h3 class="font-headline text-lg font-bold text-primary mb-4 flex items-center">
+                <span class="material-symbols-outlined mr-2">monetization_on</span>
+                Pendientes de Pago
+            </h3>
+            
+            <div class="bg-surface-container-lowest rounded-lg p-5 mb-4 border border-outline-variant/15">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-wide text-on-surface-variant block mb-1">Invoice #INV-8794</span>
+                        <span class="font-headline font-bold text-primary text-xl">$145.00</span>
+                    </div>
+                    <span class="bg-error-container text-on-error-container text-xs font-bold px-2 py-1 rounded">DUE</span>
+                </div>
+                <p class="text-sm text-on-surface-variant mb-4">For Order ORD-8794C (Dell XPS Battery Replacement)</p>
+                <button class="w-full bg-gradient-to-br from-[#002542] to-[#1b3b5a] text-on-primary py-3 rounded-md font-medium text-sm hover:opacity-90 transition-opacity flex justify-center items-center">
+                    Pagar vía PayPal
+                </button>
+            </div>
+            <div class="text-xs text-center text-on-surface-variant">
+                Proceso de pago seguro proporcionado por PayPal.
+            </div>
+        </div>
+
+        <!-- Support Card -->
+        <div class="bg-surface-container-low rounded-xl p-6">
+            <h3 class="font-headline text-base font-bold text-primary mb-2">¿Necesitas soporte técnico?</h3>
+            <p class="text-sm text-on-surface-variant mb-4">Nuestro equipo de ingeniería está listo para ayudarte con cualquier pregunta relacionada con tus reparaciones.</p>
+            <button class="w-full border border-outline text-primary py-2 rounded-md font-medium text-sm hover:bg-surface-container-highest transition-colors">
+                Contactar Soporte
+            </button>
+        </div>
+    </aside>
+  </div>
+</div>

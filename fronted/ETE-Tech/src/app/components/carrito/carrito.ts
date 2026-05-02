@@ -2,13 +2,11 @@ import { Component, Signal } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { CarritoService } from '../../services/carrito.service';
 import { Product } from '../../models/product.model';
-import { TopNavbar } from '../top-navbar/top-navbar';
-import { SideNavbar } from '../side-navbar/side-navbar';
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [CommonModule, CurrencyPipe, TopNavbar, SideNavbar],
+  imports: [CommonModule, CurrencyPipe],
   templateUrl: './carrito.html',
   styleUrl: './carrito.css',
 })

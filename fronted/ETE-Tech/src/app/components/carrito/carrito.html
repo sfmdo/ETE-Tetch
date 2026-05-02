@@ -1,27 +1,5 @@
-<!DOCTYPE html>
-<html class="light" lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>ETE-Tech - Carrito</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Manrope', sans-serif; }
-    </style>
-</head>
-<body class="bg-[#f8fafb] text-[#191c1d] min-h-screen flex flex-col pt-16">
-
-<!-- TopNavBar Component -->
-<app-top-navbar></app-top-navbar>
-
-<!-- SideNavBar Component -->
-<app-side-navbar></app-side-navbar>
-
-<!-- Main Content Canvas -->
-<main class="flex-grow max-w-4xl mx-auto w-full px-6 py-20 flex flex-col gap-8 md:pl-72">
+<div class="flex-1 overflow-y-auto pt-16 md:pt-0 pb-8 px-4 md:px-12 bg-surface h-full">
+  <div class="max-w-4xl mx-auto mt-8 flex flex-col gap-8">
     <header class="mb-8">
         <h1 class="font-headline text-4xl font-bold tracking-tight text-[#002542] mb-2">Mi Carrito</h1>
         <p class="text-[#43474d] text-lg">Revisa los servicios que estás a punto de adquirir.</p>
@@ -72,21 +50,5 @@
             </div>
         }
     </div>
-</main>
-
-<!-- Footer -->
-<footer class="bg-slate-50 text-slate-500 font-inter text-xs tracking-wide uppercase w-full py-12 border-t border-slate-200/10 mt-auto">
-    <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-        <div>
-            © 2024 ETE-Tech Precision Hardware Management. All rights reserved.
-        </div>
-        <div class="flex space-x-6">
-            <a class="text-slate-500 hover:text-blue-600 hover:underline underline-offset-4 transition-opacity duration-300" href="#">Privacy Policy</a>
-            <a class="text-slate-500 hover:text-blue-600 hover:underline underline-offset-4 transition-opacity duration-300" href="#">Terms of Service</a>
-            <a class="text-slate-500 hover:text-blue-600 hover:underline underline-offset-4 transition-opacity duration-300" href="#">Contact Support</a>
-        </div>
-    </div>
-</footer>
-
-</body>
-</html>
+  </div>
+</div>

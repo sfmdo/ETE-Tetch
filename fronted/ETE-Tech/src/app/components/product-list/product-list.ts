@@ -2,14 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
-import { CarritoService } from '../../service/carrito.service';
-import { TopNavbar } from '../top-navbar/top-navbar';
-import { SideNavbar } from '../side-navbar/side-navbar';
+import { CarritoService } from '../../services/carrito.service';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, TopNavbar, SideNavbar],
+  imports: [CommonModule],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css'
 })
