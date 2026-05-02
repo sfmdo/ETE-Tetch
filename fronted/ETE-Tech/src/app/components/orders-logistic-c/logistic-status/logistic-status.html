@@ -1,0 +1,85 @@
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-6 mb-6 border border-outline-variant">
+  
+  <div class="flex justify-between items-center mb-8">
+    <h3 class="text-sm font-semibold text-outline tracking-wider uppercase">Ciclo de Servicio Técnico</h3>
+    
+    <ng-container *ngIf="isEditable(); else readOnlyStatus">
+      <select 
+        class="bg-primary-container text-on-primary-container text-sm font-medium py-2 px-4 rounded-lg border-none cursor-pointer focus:ring-2 focus:ring-primary"
+        (change)="onStatusChange($event)">
+        <option *ngFor="let status of selectableOptions" [value]="status" [selected]="status === currentStatus">
+          {{ statusTranslation[status] }}
+        </option>
+      </select>
+    </ng-container>
+
+    <ng-template #readOnlyStatus>
+      <span class="text-sm font-bold px-4 py-2 rounded-lg shadow-sm"
+            [ngClass]="currentStatus === 'CANCELLED' ? 'bg-error text-white' : 'bg-secondary text-white'">
+        {{ statusTranslation[currentStatus] }}
+      </span>
+    </ng-template>
+  </div>
+
+  <div class="flex items-center justify-between relative max-w-5xl mx-auto px-4">
+    
+    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-0.5 bg-surface-container-highest z-0"></div>
+
+    <div class="relative z-10 flex flex-col items-center bg-surface-container-lowest px-3">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center border-2 transition-colors shadow-sm"
+           [ngClass]="{
+             'bg-primary text-on-primary border-primary': getStepState('PENDING') === 'active',
+             'bg-surface-container-highest text-on-surface border-transparent': getStepState('PENDING') === 'pending',
+             'bg-[#1a8a3d] text-white border-[#1a8a3d]': getStepState('PENDING') === 'completed'
+           }">
+        <span class="material-icons !text-2xl">pending_actions</span> 
+      </div>
+      <span class="text-xs font-semibold mt-2.5" [ngClass]="getStepState('PENDING') !== 'pending' ? 'text-on-surface' : 'text-outline'">
+        PENDIENTE
+      </span>
+    </div>
+
+    <div class="relative z-10 flex flex-col items-center bg-surface-container-lowest px-3">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center border-2 transition-colors shadow-sm"
+           [ngClass]="{
+             'bg-primary text-on-primary border-primary': getStepState('IN_PROGRESS') === 'active',
+             'bg-surface-container-highest text-outline border-transparent': getStepState('IN_PROGRESS') === 'pending',
+             'bg-[#1a8a3d] text-white border-[#1a8a3d]': getStepState('IN_PROGRESS') === 'completed'
+           }">
+        <span class="material-icons !text-2xl">engineering</span>
+      </div>
+      <span class="text-xs font-semibold mt-2.5" [ngClass]="getStepState('IN_PROGRESS') !== 'pending' ? 'text-on-surface' : 'text-outline'">
+        EN CURSO
+      </span>
+    </div>
+
+    <div class="relative z-10 flex flex-col items-center bg-surface-container-lowest px-3">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center border-2 transition-colors shadow-sm"
+           [ngClass]="{
+             'bg-primary text-on-primary border-primary': getStepState('COMPLETED') === 'active',
+             'bg-surface-container-highest text-outline border-transparent': getStepState('COMPLETED') === 'pending',
+             'bg-[#1a8a3d] text-white border-[#1a8a3d]': getStepState('COMPLETED') === 'completed'
+           }">
+        <span class="material-icons !text-2xl">check_circle</span>
+      </div>
+      <span class="text-xs font-semibold mt-2.5" [ngClass]="getStepState('COMPLETED') !== 'pending' ? 'text-on-surface' : 'text-outline'">
+        COMPLETADO
+      </span>
+    </div>
+
+    <div class="relative z-10 flex flex-col items-center bg-surface-container-lowest px-3">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center border-2 transition-colors shadow-sm"
+           [ngClass]="{
+             'bg-primary text-on-primary border-primary': getStepState('PAID') === 'active',
+             'bg-surface-container-highest text-outline border-transparent': getStepState('PAID') === 'pending',
+             'bg-[#1a8a3d] text-white border-[#1a8a3d]': getStepState('PAID') === 'completed'
+           }">
+        <span class="material-icons !text-2xl">verified</span>
+      </div>
+      <span class="text-xs font-semibold mt-2.5" [ngClass]="getStepState('PAID') !== 'pending' ? 'text-on-surface' : 'text-outline'">
+        PAGADO
+      </span>
+    </div>
+
+  </div>
+</div>

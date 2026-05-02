@@ -1,0 +1,33 @@
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-6 mb-6 border border-outline-variant">
+  
+  <h3 class="text-sm font-semibold text-outline tracking-wider uppercase mb-6">Registro Técnico</h3>
+
+  <div class="space-y-6">
+    <div>
+      <label class="block text-sm font-bold text-primary mb-2 uppercase">Diagnóstico Final</label>
+      <textarea 
+        class="w-full bg-surface-container-lowest text-on-surface border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-y min-h-[100px] text-sm"
+        placeholder="Ingresa el análisis de la causa raíz..."
+        [(ngModel)]="diagnosisText">
+      </textarea>
+    </div>
+
+    <div>
+      <label class="block text-sm font-bold text-primary mb-2 uppercase">Solución Aplicada</label>
+      <textarea 
+        class="w-full bg-surface-container-lowest text-on-surface border border-outline-variant rounded-lg p-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-y min-h-[100px] text-sm"
+        placeholder="Describe los pasos de remediación ejecutados..."
+        [(ngModel)]="solutionText">
+      </textarea>
+    </div>
+
+    <div class="flex justify-end pt-2">
+      <button 
+        class="bg-primary text-on-primary text-sm font-medium py-2 px-6 rounded-lg transition-colors hover:bg-primary-dark focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+        (click)="onSave()">
+        Guardar Registro
+      </button>
+    </div>
+  </div>
+
+</div>

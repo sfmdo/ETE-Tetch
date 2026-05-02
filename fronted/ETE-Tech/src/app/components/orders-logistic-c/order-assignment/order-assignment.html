@@ -1,0 +1,32 @@
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-6 mb-6 border border-outline-variant">
+  
+  <h3 class="text-sm font-semibold text-outline tracking-wider uppercase mb-4">Asignación Técnica</h3>
+
+  <div *ngIf="currentTechnician; else unassigned" class="flex items-center gap-4 bg-surface-container-high p-4 rounded-lg">
+    <div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
+      <i class="fas fa-user-check"></i>
+    </div>
+    <div>
+      <p class="text-sm font-medium text-on-surface">Técnico Asignado:</p>
+      <p class="text-xs text-outline">{{ currentTechnicianName }}</p>
+    </div>
+  </div>
+
+  <ng-template #unassigned>
+    <div class="text-center">
+      <div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center mx-auto mb-3">
+        <i class="fas fa-user-clock text-lg"></i>
+      </div>
+      <p class="text-sm font-medium text-on-surface mb-1">Orden sin asignar</p>
+      <p class="text-xs text-outline mb-4">Actualmente nadie está trabajando en este equipo.</p>
+      
+      <button 
+        (click)="onAssignClick()"
+        class="w-full bg-primary text-on-primary text-sm font-medium py-2 px-4 rounded-lg hover:bg-primary-dark transition-colors shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+        <i class="fas fa-hand-paper mr-2"></i>
+        Asignarme esta orden
+      </button>
+    </div>
+  </ng-template>
+
+</div>

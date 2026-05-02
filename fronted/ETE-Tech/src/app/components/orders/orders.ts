@@ -52,7 +52,7 @@ export class OrdersComponent implements OnInit {
         // Validación de seguridad para la data
         const rawData = data && data.order ? data.order : (Array.isArray(data) ? data : []);
         this.orders = [...rawData];
-
+        console.log(this.orders);
         // Ejecutamos procesos internos
         this.calculateStats();
         this.applyFilter(this.currentFilter);
@@ -104,7 +104,7 @@ export class OrdersComponent implements OnInit {
     this.filteredOrders = this.orders.filter(order => 
       order.Order_Number?.toLowerCase().includes(searchTerm) ||
       order.Brand_Model?.toLowerCase().includes(searchTerm) ||
-      order.Client_ID?.toString().includes(searchTerm)
+      order.Client_Name?.toLowerCase().includes(searchTerm)
     );
     this.cdr.detectChanges();
   }

@@ -1,0 +1,71 @@
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-6 mb-6 border border-outline-variant">
+  
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h3 class="text-sm font-semibold text-outline tracking-wider uppercase">Asignación de Refacciones y Servicios</h3>
+      <p class="text-xs text-outline mt-1">Detalle de consumo para la orden #{{ orderId }}</p>
+    </div>
+    
+    <button 
+        *ngIf="logisticStatus !== 'COMPLETED' && logisticStatus !== 'PAID'"
+        (click)="openProductModal()"
+        class="flex items-center gap-2 bg-tertiary text-on-tertiary text-sm font-medium py-2 px-4 rounded-lg hover:bg-tertiary-container transition-all shadow-sm">
+        <i class="fas fa-plus text-xs"></i>
+        Agregar Item
+    </button>
+  </div>
+
+  <div *ngIf="items && items.length > 0; else emptyState" class="overflow-x-auto">
+    <table class="w-full text-left text-sm">
+      <thead>
+        <tr class="text-outline border-b border-outline-variant">
+          <th class="pb-3 font-semibold">Nombre</th>
+          <th class="pb-3 font-semibold text-center">Tipo</th>
+          <th class="pb-3 font-semibold text-center">Cant.</th>
+          <th class="pb-3 font-semibold text-right">Precio</th>
+          <th class="pb-3 font-semibold text-right">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-outline-variant/30">
+        <tr *ngFor="let item of items" class="group hover:bg-surface-container-low transition-colors">
+          <td class="py-3 font-medium text-on-surface">
+            {{ item.Product_Name }}
+          </td>
+          <td class="py-3 text-center">
+            {{ item.Item_Type }}
+          </td>
+          <td class="py-3 text-center text-outline">{{ item.Quantity }}</td>
+          <td class="py-3 text-right text-outline">{{ item.Unit_Price | currency }}</td>
+          <td class="py-3 text-right font-bold text-on-surface">
+            {{ (item.Unit_Price * item.Quantity) | currency }}
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="border-t-2 border-outline-variant">
+          <td colspan="4" class="pt-4 text-right font-semibold text-outline uppercase text-xs">Subtotal:</td>
+          <td class="pt-4 text-right font-extrabold text-primary text-lg">
+            {{ totalItems | currency }}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="border-2 border-dashed border-outline-variant rounded-xl p-8 flex flex-col items-center justify-center text-center">
+      <div class="w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center mb-3 text-outline">
+        <i class="fas fa-tools"></i>
+      </div>
+      <p class="text-sm text-on-surface font-medium">No hay refacciones asignadas</p>
+      <p class="text-xs text-outline mt-1">Agrega servicios o productos para calcular el costo final.</p>
+    </div>
+  </ng-template>
+
+  <app-add-product-modal-logistic
+    *ngIf="isProductModalOpen"
+    [orderId]="orderId"
+    (close)="closeProductModal()"
+    (productAdded)="onProductAdded()">
+  </app-add-product-modal-logistic>
+</div>

@@ -46,14 +46,16 @@ export interface Order {
   Order_ID: number;
   Order_Number: string;
   Client_ID: number;
-  Service_ID: number;
+  Client_Name: string;      
+  Technician_ID?: number | null;
+  Technician_Name: string | null; 
   Brand_Model: string;
   Reported_Fault: string;
-  Final_Diagnosis?: string;
-  Applied_Solution?: string;
-  Technician_ID?: number;
+  Final_Diagnosis?: string | null;
+  Applied_Solution?: string | null;
   Logistics_Status: OrderStatus;
-  Total_Cost: number;
-  Created_At: Date;
-  Items: OrderItem[];
+  Order_Total: string | number;
+  Creation_Date: string;       
+  Pending_Balance: string | number;
+  Items?: any[]; 
 }

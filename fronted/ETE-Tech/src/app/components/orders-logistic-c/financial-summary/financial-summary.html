@@ -1,0 +1,36 @@
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-6 mb-6 border border-outline-variant" *ngIf="order">
+  
+  <h3 class="text-sm font-semibold text-outline tracking-wider uppercase mb-6">Resumen Financiero</h3>
+
+  <div class="space-y-4 mb-6 pb-6 border-b border-outline-variant/30">
+    <div class="flex justify-between items-center text-sm">
+      <span class="text-outline">Orden No.</span>
+      <span class="font-bold text-on-surface">{{ order.Order_Number || 'N/A' }}</span>
+    </div>
+    
+    <div class="flex justify-between items-center text-sm">
+      <span class="text-outline">Total</span>
+      <span class="font-medium text-on-surface text-right truncate max-w-[150px]" [title]="order.Order_Total">
+        {{ order.Order_Total || 'N/A' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="space-y-3 mb-6">
+    <div class="flex justify-between items-center">
+      <span class="text-sm font-semibold text-on-surface">Saldo pendiente</span>
+      <span class="text-lg font-bold text-primary">
+        {{ order.Pending_Balance | currency:'MXN':'symbol-narrow':'1.2-2' }}
+      </span>
+    </div>
+  </div>
+
+  </div>
+
+<div class="bg-surface-container-lowest rounded-xl shadow-sm p-6 mb-6 border border-outline-variant animate-pulse" *ngIf="!order">
+  <div class="h-4 bg-surface-container-highest rounded w-1/2 mb-6"></div>
+  <div class="space-y-4">
+    <div class="h-3 bg-surface-container-highest rounded w-full"></div>
+    <div class="h-3 bg-surface-container-highest rounded w-3/4"></div>
+  </div>
+</div>

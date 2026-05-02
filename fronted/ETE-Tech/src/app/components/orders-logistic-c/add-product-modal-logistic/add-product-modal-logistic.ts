@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProductService } from '../../services/product.service';
-import { OrderService } from '../../services/order.service';
-import { Product } from '../../models/product.model';
-import { AddItemsPayload } from '../../models/order.model';
+import { ProductService } from '../../../services/product.service';
+import { OrderService } from '../../../services/order.service';
+import { Product } from '../../../models/product.model';
+import { AddItemsPayload } from '../../../models/order.model';
 
 @Component({
-  selector: 'app-add-product-modal',
+  selector: 'app-add-product-modal-logistic',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './add-product-modal-logistic.html'
@@ -29,7 +29,7 @@ export class AddProductModalComponent implements OnInit {
   constructor(
     private productService: ProductService,
     private orderService: OrderService,
-    private cdr: ChangeDetectorRef // Inyectamos esto para forzar la actualización
+    private cdr: ChangeDetectorRef 
   ) {}
 
   ngOnInit(): void {

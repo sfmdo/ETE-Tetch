@@ -1,3 +1,4 @@
+
 <main class="flex-1 flex flex-col h-screen overflow-y-auto bg-surface relative">
   <header class="px-4 md:px-8 pt-10 pb-6 shrink-0 z-10 bg-surface/80 backdrop-blur-md sticky top-0 border-b border-surface-container-low">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -53,7 +54,7 @@
       </div>
 
       <div *ngFor="let order of filteredOrders" 
-           class="flex flex-col md:grid md:grid-cols-12 gap-4 md:items-center px-4 md:px-6 py-4 bg-surface-container-lowest rounded-xl md:rounded-lg border border-surface-container-low hover:bg-surface-container-low transition-colors duration-200 group">
+          class="flex flex-col md:grid md:grid-cols-12 gap-4 md:items-center px-4 md:px-6 py-4 bg-surface-container-lowest rounded-xl md:rounded-lg border border-surface-container-low hover:bg-surface-container-low transition-colors duration-200 group">
         
         <div class="md:col-span-3 flex flex-col justify-center min-w-0 border-b border-surface-container-low md:border-none pb-3 md:pb-0">
           <span class="md:hidden text-xs text-outline-variant font-bold uppercase tracking-wider mb-1">ID de Orden</span>
@@ -64,7 +65,7 @@
         
         <div class="md:col-span-3 flex flex-col justify-center min-w-0 pt-2 md:pt-0">
           <span class="md:hidden text-xs text-outline-variant font-bold uppercase tracking-wider mb-1">Cliente / Equipo</span>
-          <span class="font-body font-medium text-on-surface text-sm truncate">ID Cliente: {{ order?.Client_ID }}</span>
+          <span class="font-body font-medium text-on-surface text-sm truncate">{{ order?.Client_Name }}</span>
           <span class="font-body text-xs text-on-surface-variant mt-0.5 truncate">{{ order?.Brand_Model }}</span>
         </div>
 
