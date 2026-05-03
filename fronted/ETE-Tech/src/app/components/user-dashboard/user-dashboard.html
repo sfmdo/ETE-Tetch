@@ -1,0 +1,140 @@
+<div class="flex-1 overflow-y-auto pt-16 md:pt-0 pb-8 px-4 md:px-12 bg-surface h-full">
+  <div class="max-w-7xl mx-auto mt-8 flex flex-col lg:flex-row gap-8">
+    
+    <div class="flex-grow space-y-12">
+        <header>
+            <h1 class="font-headline text-4xl font-bold tracking-tight text-primary mb-2">
+                Bienvenido de vuelta<span *ngIf="userName">, {{ userName }}</span>.
+            </h1>
+            <p class="text-on-surface-variant text-lg">Aquí está el estado de tus servicios.</p>
+        </header>
+
+        <div *ngIf="cargando" class="text-center py-8 text-on-surface-variant">
+            Cargando tus datos...
+        </div>
+        <div *ngIf="error" class="bg-error-container text-on-error-container p-4 rounded-md">
+            {{ error }}
+        </div>
+
+        <section *ngIf="!cargando && !error" class="bg-surface-container-low rounded-xl p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-headline text-2xl font-semibold text-primary">Reparaciones Activas</h2>
+                <span class="text-xs tracking-wider uppercase font-semibold text-on-surface-variant">{{ activeOrders.length }} Equipos</span>
+            </div>
+            
+            <div class="space-y-4">
+                <div *ngIf="activeOrders.length === 0" class="text-center py-6 text-on-surface-variant text-sm">
+                    No tienes reparaciones activas en este momento.
+                </div>
+
+                <div *ngFor="let order of activeOrders" class="bg-surface-container-lowest rounded-lg p-6 flex flex-col md:flex-row items-start md:items-center justify-between hover:bg-surface-container-high transition-colors">
+                    <div class="flex-grow pr-6">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <span class="bg-surface-container-highest px-3 py-1 rounded-full flex items-center text-xs font-semibold uppercase tracking-wide">
+                                <span class="w-1.5 h-1.5 rounded-full mr-2" [ngClass]="getStatusColor(order.Logistics_Status)"></span>
+                                {{ translateStatus(order.Logistics_Status) }}
+                            </span>
+                            <span class="text-sm text-outline font-mono">{{ order.Order_Number }}</span>
+                        </div>
+                        <h3 class="font-headline text-lg font-bold text-primary mb-1">{{ order.Brand_Model }}</h3>
+                        <p class="text-sm text-on-surface-variant line-clamp-2">{{ order.Reported_Fault }}</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 whitespace-nowrap flex space-x-3">
+                        <button 
+                            [routerLink]="['/user-order', order.Order_ID]" 
+                            class="bg-primary text-on-primary px-4 py-2 rounded text-sm font-medium hover:bg-primary-container transition-colors">
+                            Ver detalles
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section *ngIf="!cargando && !error" class="bg-surface-container-low rounded-xl p-8">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="font-headline text-2xl font-semibold text-primary">Historial de Servicios</h2>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+            <thead class="text-xs uppercase tracking-wide text-on-surface-variant border-b border-surface-container-high">
+                <tr>
+                    <th class="pb-3 font-medium">Orden</th>
+                    <th class="pb-3 font-medium">Servicio</th>
+                    <th class="pb-3 font-medium">Fecha</th>
+                    <th class="pb-3 font-medium">Estado</th>
+                    <th class="pb-3 font-medium text-right">Acción</th> </tr>
+            </thead>
+            <tbody class="divide-y divide-surface-container-high text-on-surface">
+                <tr *ngFor="let order of completedOrders" class="hover:bg-surface-container-lowest transition-colors group">
+                    <td class="py-4 font-mono text-outline">{{ order.Order_Number }}</td>
+                    <td class="py-4 font-medium">{{ order.Brand_Model }}</td>
+                    <td class="py-4 text-on-surface-variant">{{ order.Creation_Date | date:'mediumDate' }}</td>
+                    <td class="py-4">
+                        <span class="inline-flex items-center gap-1 text-green-700 bg-green-50 px-2 py-0.5 rounded-full text-xs font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                            {{ order.Logistics_Status === 'PAID' ? 'Liquidado' : 'Completado' }}
+                        </span>
+                    </td>
+                    <td class="py-4 text-right">
+                        <button 
+                            [routerLink]="['/user-order', order.Order_ID]" 
+                            class="inline-flex items-center gap-1 text-primary hover:text-primary-container font-bold text-xs uppercase tracking-tighter transition-all group-hover:translate-x-1">
+                            Ver Detalles
+                            <span class="material-symbols-outlined text-sm">trending_flat</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="completedOrders.length === 0">
+                    <td colspan="5" class="py-8 text-center text-on-surface-variant text-sm">Sin servicios completados aún.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+    </div>
+
+    <aside class="w-full lg:w-80 flex-shrink-0 space-y-6">
+        <div class="bg-surface-container-highest rounded-xl p-6 relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 text-primary opacity-5 transform rotate-12 pointer-events-none">
+                <span class="material-symbols-outlined" style="font-size: 150px;">receipt_long</span>
+            </div>
+            <h3 class="font-headline text-lg font-bold text-primary mb-4 flex items-center">
+                <span class="material-symbols-outlined mr-2">monetization_on</span>
+                Pendientes de Pago
+            </h3>
+            
+            <div *ngIf="pendingPayments.length === 0" class="text-sm text-on-surface-variant italic mb-4">
+                No tienes pagos pendientes. ¡Todo al día!
+            </div>
+
+            <div *ngFor="let payment of pendingPayments" class="bg-surface-container-lowest rounded-lg p-5 mb-4 border border-outline-variant/15">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <span class="text-xs font-semibold uppercase tracking-wide text-on-surface-variant block mb-1">Orden #{{ payment.Order_Number }}</span>
+                        <span class="font-headline font-bold text-primary text-xl">{{ payment.Pending_Balance | currency }}</span>
+                    </div>
+                    <span class="bg-error-container text-on-error-container text-xs font-bold px-2 py-1 rounded">DEUDA</span>
+                </div>
+                <p class="text-sm text-on-surface-variant mb-4">{{ payment.Brand_Model }}</p>
+                <button 
+                    [routerLink]="['/user-order', payment.Order_ID]"
+                    class="w-full bg-gradient-to-br from-[#002542] to-[#1b3b5a] text-on-primary py-3 rounded-md font-medium text-sm hover:opacity-90 transition-opacity flex justify-center items-center">
+                    Pagar
+                </button>
+            </div>
+            
+            <div class="text-xs text-center text-on-surface-variant">
+                Proceso de pago seguro proporcionado por PayPal.
+            </div>
+        </div>
+
+        <div class="bg-surface-container-low rounded-xl p-6">
+            <h3 class="font-headline text-base font-bold text-primary mb-2">¿Necesitas soporte técnico?</h3>
+            <p class="text-sm text-on-surface-variant mb-4">Nuestro equipo de ingeniería está listo para ayudarte con cualquier pregunta relacionada con tus reparaciones.</p>
+            <button class="w-full border border-outline text-primary py-2 rounded-md font-medium text-sm hover:bg-surface-container-highest transition-colors">
+                Contactar Soporte
+            </button>
+        </div>
+    </aside>
+  </div>
+</div>

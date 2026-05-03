@@ -42,6 +42,14 @@ export interface UpdateStatusPayload {
   status: OrderStatus;
 }
 
+export interface RegisterPaymentPayload {
+  amount: number;
+}
+
+export interface RegisterPaymentResponse {
+  message: string;
+}
+
 export interface Order {
   Order_ID: number;
   Order_Number: string;

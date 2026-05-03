@@ -7,6 +7,10 @@ import { RegisterComponent } from './components/register/register';
 import { InventoryComponent } from './components/inventory/inventory';
 import { OrdersComponent } from './components/orders/orders';
 import { OrderLogisticComponent } from './components/order-logistic/order-logistic';
+import { UserConfigComponent } from './components/user-config/user-config';
+import { UserDashboardComponent } from './components/user-dashboard/user-dashboard';
+import { ClientOrderComponent } from './components/client-order/client-order';
+import { autoRedirectGuard } from './guards/redirect.guard';
 
 export const routes: Routes = [
   // 1. Ruta inicial: Si no hay nada, intentamos ir a productos (el guard decidirá si nos manda al login)
@@ -41,7 +45,8 @@ export const routes: Routes = [
   { 
     path: 'catalog', 
     component: CatalogComponent,
-    canActivate: [authGuard] 
+    canActivate: [authGuard],
+    data: { role: 'User' }
   },
   { 
     path: 'orders', 
@@ -55,10 +60,32 @@ export const routes: Routes = [
     canActivate: [authGuard],
     data: { role: 'Admin' }
   },
+  { 
+    path: 'user-settings', 
+    component: UserConfigComponent,
+    canActivate: [authGuard],
+  },
+  { 
+    path: 'user-dashboard', 
+    component: UserDashboardComponent,
+    canActivate: [authGuard],
+    data: { role: 'User' }
+  },
+  { 
+    path: 'user-order/:id', 
+    component: ClientOrderComponent,
+    canActivate: [authGuard],
+    data: { role: 'User' }
+  },
 
-  // 4. Ruta comodín: Cualquier otra cosa redirige a catalogo
+  { 
+    path: 'redirect-handler', 
+    component: LoginComponent, //Componente puente
+    canActivate: [autoRedirectGuard] 
+  },
+
   { 
     path: '**', 
-    redirectTo: 'catalog' 
+    redirectTo: 'redirect-handler' 
   }
 ];

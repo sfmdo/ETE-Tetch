@@ -28,8 +28,7 @@ export class CatalogComponent implements OnInit {
   brands: string[] = ['Apple', 'Samsung', 'Xiaomi', 'Huawei', 'Motorola', 'Google', 'Oppo', 'Vivo', 'Sony', 'Asus', 'Lenovo', 'HP', 'Dell', 'Nintendo', 'PlayStation', 'Xbox', 'Otra'];
   
   showForm: boolean = false;
-  
-  // ¡AQUÍ ESTÁ LA VARIABLE FALTANTE! Debe ir a nivel de clase, no dentro del constructor
+
   mostrarCheckout: boolean = false; 
 
   constructor(
@@ -48,8 +47,6 @@ export class CatalogComponent implements OnInit {
     });
     this.currentUserId = this.authService.getCurrentUser()?.User_ID || 0;
     
-    // ELIMINÉ @ViewChild y paymentReady de aquí porque eran sintaxis inválida 
-    // y de todas formas esa lógica ya se mudó al CheckoutComponent.
   }
   
   ngOnInit(): void {
@@ -72,7 +69,7 @@ export class CatalogComponent implements OnInit {
   selectProduct(product: Product): void {
     this.selectedProduct = product;
     this.showForm = true;
-    this.mostrarCheckout = false; // Nos aseguramos de empezar en el formulario
+    this.mostrarCheckout = false; 
 
     const currentUserId = this.authService.getCurrentUserId();
 
@@ -87,17 +84,21 @@ export class CatalogComponent implements OnInit {
     const isService = product.Category === 'Servicio';
     const brandCtrl = this.receptionForm.get('brand');
     const modelCtrl = this.receptionForm.get('model');
+    const faultCtrl = this.receptionForm.get('faultDescription');
 
     if (isService) {
       brandCtrl?.setValidators([Validators.required]);
       modelCtrl?.setValidators([Validators.required]);
+      faultCtrl?.setValidators([Validators.required]);
     } else {
-      brandCtrl?.clearValidators();
-      modelCtrl?.clearValidators();
+      brandCtrl?.setValidators([Validators.required]);
+      modelCtrl?.setValidators([Validators.required]);
+      faultCtrl?.clearValidators();
     }
 
     brandCtrl?.updateValueAndValidity();
     modelCtrl?.updateValueAndValidity();
+    faultCtrl?.updateValueAndValidity();
     
     this.cdr.detectChanges(); 
   }
@@ -119,26 +120,21 @@ export class CatalogComponent implements OnInit {
     this.submitToApi(payload);
   }
 
-  // --- NUEVAS FUNCIONES PARA EL FLUJO DE PAGO ---
 
   onSubmitForm(): void {
     if (this.receptionForm.invalid) return;
     
-    // Cambiamos a la vista de pago
     this.mostrarCheckout = true;
     this.cdr.detectChanges();
   }
 
   onFinalizarTodo(respuestaBackend: any): void {
-    // Esto lo emite el CheckoutComponent cuando ya se pagó y se guardó en BD
     const numOrden = respuestaBackend.summary?.orderNumber || 'Desconocido';
     alert(`¡Orden #${numOrden} creada exitosamente!`);
     
-    // Limpiamos la pantalla
     this.cancelReception();
   }
 
-  // Se eliminó la función duplicada y se consolidó en esta
   cancelReception(): void {
     this.selectedProduct = null;
     this.showForm = false;

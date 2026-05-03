@@ -45,19 +45,16 @@ export class OrdersComponent implements OnInit {
 
   loadOrders(): void {
     this.loading = true;
-    this.cdr.detectChanges(); // Forzamos mostrar el estado inicial de carga
+    this.cdr.detectChanges(); 
 
     this.orderService.getAllOrders().subscribe({
       next: (data: any) => {
-        // Validación de seguridad para la data
         const rawData = data && data.order ? data.order : (Array.isArray(data) ? data : []);
         this.orders = [...rawData];
         console.log(this.orders);
-        // Ejecutamos procesos internos
         this.calculateStats();
         this.applyFilter(this.currentFilter);
 
-        // APAGADO SEGURO
         this.loading = false;
         this.cdr.detectChanges(); 
       },
@@ -72,7 +69,6 @@ export class OrdersComponent implements OnInit {
   applyFilter(filterValue: string): void {
     this.currentFilter = filterValue;
     
-    // Si no hay órdenes aún, no hacemos nada para no romper el código
     if (!this.orders || !Array.isArray(this.orders)) {
       this.filteredOrders = [];
       return;

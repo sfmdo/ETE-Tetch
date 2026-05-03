@@ -219,7 +219,7 @@ class OrderController {
             if (success) {
                 return res.json({ message: "Pago registrado correctamente. Balances y estatus actualizados." });
             } else {
-                return res.status(404).json({ message: "Orden no encontrada." });
+                return res.status(404).json({ message: "Orden no encontrada. " + id });
             }
         } catch (error: any) {
             console.error("Error al registrar el pago:", error);

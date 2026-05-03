@@ -40,7 +40,7 @@ export class CheckoutComponent implements OnInit {
     paypal.Buttons({
       createOrder: async () => {
         try {
-          const precio = Number(this.product.Sale_Price);
+          const precio = Number(this.product.Final_Price);
           const response = await firstValueFrom(
             this.paypalService.crearOrden({
               items: [{ nombre: this.product.Name, cantidad: 1, precio: precio }],
@@ -63,8 +63,9 @@ export class CheckoutComponent implements OnInit {
           const capture = await firstValueFrom(this.paypalService.capturarOrden(data.orderID));
           if (capture.status === 'COMPLETED') {
             this.mensajeStatus = 'Pago exitoso. Creando tu orden...';
+            const montoPagado = Number(this.product.Final_Price);
             this.cdr.detectChanges();
-            this.crearOrdenBackend();
+            this.crearOrdenBackend(montoPagado);
           }
         } catch (error) {
           this.cargando = false;
@@ -79,25 +80,43 @@ export class CheckoutComponent implements OnInit {
     }).render(this.paypalButtonContainer.nativeElement);
   }
 
-  private crearOrdenBackend(): void {
-    const payload: CreateOrderPayload = {
-      Client_ID: this.currentUserId,
-      Service_ID: this.product.Product_ID,
-      Brand_Model: `${this.formValues.brand} ${this.formValues.model}`.trim(),
-      Reported_Fault: this.formValues.faultDescription
-    };
+  private crearOrdenBackend(montoPagado: number): void {
+  const payload: CreateOrderPayload = {
+    Client_ID: this.currentUserId,
+    Service_ID: this.product.Product_ID,
+    Brand_Model: `${this.formValues.brand} ${this.formValues.model}`.trim(),
+    Reported_Fault: this.formValues.faultDescription || 'N/A'
+  };
 
-    this.orderService.createOrder(payload).subscribe({
-      next: (res: any) => {
-        this.cargando = false;
-        this.orderCreated.emit(res); // Emite al catálogo que ya terminó
-      },
-      error: (err: any) => {
-        this.cargando = false;
-        const msg = err.error?.message || 'Error al guardar la orden';
-        this.mensajeStatus = `Aviso: Pago cobrado, pero falló el registro: ${msg}`;
-        this.cdr.detectChanges();
-      }
-    });
-  }
+  this.orderService.createOrder(payload).subscribe({
+    next: (res: any) => {
+      const nuevaOrderId = res.summary.orderId;
+
+      setTimeout(() => {
+      this.orderService.registerPayment(nuevaOrderId, { amount: montoPagado }).subscribe({
+        next: (resPago) => {
+          this.mensajeStatus = `¡Orden #${res.summary.orderNumber} creada y pagada con éxito!`;
+          this.cargando = false;
+          this.cdr.detectChanges();
+          this.orderCreated.emit(res);
+        },
+        error: (err) => {
+          console.error('Error al aplicar el abono:', err);
+          this.mensajeStatus = 'Orden creada, pero falló el registro del abono.';
+          this.cargando = false;
+          this.cdr.detectChanges();
+          this.orderCreated.emit(res); 
+        }
+      });
+    }, 1000);
+      
+    },
+    error: (err: any) => {
+      this.cargando = false;
+      const msg = err.error?.message || 'Error al guardar la orden';
+      this.mensajeStatus = `Aviso: Pago cobrado, pero falló el registro: ${msg}`;
+      this.cdr.detectChanges();
+    }
+  });
+}
 }

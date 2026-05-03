@@ -123,7 +123,6 @@ class OrderService {
         `;
         const [result] = await connection.promise().query<ResultSetHeader>(query, [
             paymentAmount, 
-            paymentAmount, 
             orderId
         ]);
         

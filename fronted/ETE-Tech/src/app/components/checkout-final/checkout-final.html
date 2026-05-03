@@ -1,0 +1,53 @@
+<div class="flex flex-col h-full animate-fade-in font-body">
+  
+  <div class="p-6 bg-slate-900 text-white border-b border-slate-800 rounded-t-xl">
+    <h2 class="font-headline text-lg font-bold flex items-center gap-2">
+      <span class="material-symbols-outlined text-amber-400">payments</span>
+      Liquidar Saldo Pendiente
+    </h2>
+    <p class="text-[10px] uppercase tracking-widest text-slate-400 mt-1 font-black">Orden: {{ order?.Order_Number }}</p>
+  </div>
+
+  <div class="p-6 space-y-4">
+    <div class="flex justify-between items-center text-sm">
+      <span class="text-slate-500 font-medium">Concepto:</span>
+      <span class="text-slate-800 font-bold">Pago Final ETE-Tech</span>
+    </div>
+    
+    <div class="flex justify-between items-center text-sm">
+      <span class="text-slate-500 font-medium">Equipo:</span>
+      <span class="text-slate-800 font-bold">{{ order?.Brand_Model }}</span>
+    </div>
+
+    <div class="pt-4 border-t border-slate-100 mt-4">
+      <div class="flex justify-between items-center">
+        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Monto a Liquidar</span>
+        <span class="text-2xl font-headline font-black text-primary">${{ order?.Pending_Balance | number:'1.2-2' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-6 bg-slate-50 border-t border-slate-100 flex-1 flex flex-col items-center rounded-b-xl">
+    
+    <div *ngIf="mensajeStatus" 
+         class="w-full mb-4 p-4 rounded-xl text-xs font-bold text-center shadow-sm border animate-bounce-short"
+         [ngClass]="{
+           'bg-blue-50 text-blue-700 border-blue-100': cargando,
+           'bg-green-50 text-green-700 border-green-100': mensajeStatus.includes('éxito'),
+           'bg-red-50 text-red-700 border-red-100': mensajeStatus.includes('Error') || mensajeStatus.includes('falló')
+         }">
+      {{ mensajeStatus }}
+    </div>
+
+    <div class="w-full relative z-0" [hidden]="cargando" #paypalButtonContainer></div>
+
+    <div *ngIf="cargando" class="flex flex-col items-center justify-center py-6 gap-3">
+      <div class="w-10 h-10 border-4 border-primary/10 border-t-primary rounded-full animate-spin"></div>
+      <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Validando Transacción...</p>
+    </div>
+
+    <button *ngIf="!cargando" (click)="volverAtras.emit()" class="mt-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-primary transition-colors">
+      ← Cancelar y volver
+    </button>
+  </div>
+</div>

@@ -21,7 +21,7 @@ class UserService {
     }
 
     async findById(id: number): Promise<IUser | null> {
-        const query = 'SELECT User_ID, Full_Name, Email, Role, Status FROM USERS WHERE User_ID = ?';
+        const query = 'SELECT User_ID, Full_Name, Email, Role, Phone, Status FROM USERS WHERE User_ID = ?';
         const [rows] = await connection.promise().query<IUser[]>(query, [id]);
         return rows.length > 0 ? rows[0] : null;
     }

@@ -9,6 +9,8 @@ import {
   AddItemsResponse, 
   DiagnosisPayload, 
   UpdateStatusPayload,
+  RegisterPaymentPayload,
+  RegisterPaymentResponse,
   Order 
 } from '../models/order.model';
 
@@ -16,54 +18,43 @@ import {
   providedIn: 'root'
 })
 export class OrderService {
-  // Construimos la URL base para órdenes
+
   private apiUrl = `${environment.apiUrl}/orders`;
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * 4.1. Crear Orden Inicial (Recepción)
-   * Registra el equipo y el servicio base.
-   */
+
   createOrder(payload: CreateOrderPayload): Observable<CreateOrderResponse> {
     return this.http.post<CreateOrderResponse>(`${this.apiUrl}/`, payload);
   }
 
-  /**
-   * 4.2. Agregar Items/Refacciones a la Orden
-   * Actualiza el costo total y deduce inventario.
-   */
   addItems(payload: AddItemsPayload): Observable<AddItemsResponse> {
     return this.http.post<AddItemsResponse>(`${this.apiUrl}/add-items`, payload);
   }
 
-  /**
-   * 4.3. Registrar Diagnóstico Técnico
-   * El estado cambia automáticamente a COMPLETED en el backend.
-   */
   registerDiagnosis(orderId: number, payload: DiagnosisPayload): Observable<any> {
     return this.http.put(`${this.apiUrl}/${orderId}/diagnosis`, payload);
   }
 
-  /**
-   * 4.4. Actualizar Estado Logístico
-   * Cambio manual de estado (Ej: IN_PROGRESS, CANCELLED).
-   */
   updateStatus(orderId: number, status: UpdateStatusPayload): Observable<any> {
     return this.http.patch(`${this.apiUrl}/${orderId}/status`, status);
   }
 
-  /**
-   * Métodos adicionales útiles (GETters)
-   */
-  
-  // Obtener todas las órdenes
+  registerPayment(orderId: number, payload: RegisterPaymentPayload): Observable<RegisterPaymentResponse> {
+    return this.http.post<RegisterPaymentResponse>(`${this.apiUrl}/${orderId}/pay`, payload);
+  }
+
+  getClientOrders(clientId: number): Observable<Order[]> {
+    return this.http.get<Order[]>(`${this.apiUrl}/client/${clientId}`);
+  }
+
   getAllOrders(): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.apiUrl}/get-all`);
   }
 
-  // Obtener una orden específica por ID
   getOrderById(id: number): Observable<Order> {
     return this.http.get<Order>(`${this.apiUrl}/${id}/full`);
   }
+
+  
 }

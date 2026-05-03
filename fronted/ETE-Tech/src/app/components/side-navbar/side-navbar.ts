@@ -19,28 +19,18 @@ export class SideNavbar implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Cargar datos desde localStorage
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       this.userData = JSON.parse(savedUser);
     }
   }
 
-  // --- VALIDACIONES DE ROL ---
-
-  isAdmin(): boolean {
-    return this.userData?.Role === 'Admin';
-  }
-
-  isUser(): boolean {
-    return this.userData?.Role === 'User';
-  }
-
-  // --- ACCIONES ---
+  isAdmin() { return this.authService.isAdmin(); }
+  isUser() { return this.authService.isUser(); }
 
   logout(): void {
     this.authService.logout();
-    localStorage.removeItem('user'); // Limpieza extra
+    localStorage.removeItem('user');
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
   }
