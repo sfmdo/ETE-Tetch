@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import UserModel from '../models/user.model'
+import UserService from '../service/user.service';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -13,12 +13,12 @@ class AuthController {
                 return res.status(400).json({ message: 'Missing required fields' });
             }
 
-            const existingUser = await UserModel.findByEmail(Email);
+            const existingUser = await UserService.findByEmail(Email);
             if (existingUser) {
                 return res.status(409).json({ message: 'Email is already registered' });
             }
 
-            const newUserId = await UserModel.create({
+            const newUserId = await UserService.create({
                 Full_Name,
                 Email,
                 Password,
@@ -46,7 +46,7 @@ class AuthController {
                 return res.status(400).json({ message: 'Email and password are required' });
             }
 
-            const user = await UserModel.findByEmail(Email);
+            const user = await UserService.findByEmail(Email);
             if (!user) {
                 return res.status(401).json({ message: 'Invalid credentials' });
             }

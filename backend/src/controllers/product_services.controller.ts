@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
-import ProductModel, { ItemType, IProductService } from '../../src/models/product_services.model';
+import { ItemType, } from '../../src/models/product_services.model';
+import { IProductServices } from '../../src/models/product_services.model';
+import  ProductServicesService from '../service/product_services.service';
 
 class ProductController {
 
     // GET: /api/products/all
     async getAll(_req: Request, res: Response) {
         try {
-            const results = await ProductModel.get();
+            const results = await ProductServicesService.get();
             res.json(results);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -16,7 +18,7 @@ class ProductController {
     // GET: /api/products/only-products
     async getProducts(_req: Request, res: Response) {
         try {
-            const results = await ProductModel.get({ Item_Type: ItemType.PRODUCT } as Partial<IProductService>);
+            const results = await ProductServicesService.get({ Item_Type: ItemType.PRODUCT } as Partial<IProductServices>);
             res.json(results);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -26,7 +28,7 @@ class ProductController {
     // GET: /api/products/only-services
     async getServices(_req: Request, res: Response) {
         try {
-            const results = await ProductModel.get({ Item_Type: ItemType.SERVICE } as Partial<IProductService>);
+            const results = await ProductServicesService.get({ Item_Type: ItemType.SERVICE } as Partial<IProductServices>);
             res.json(results);
         } catch (error: any) {
             res.status(500).json({ error: error.message });
@@ -36,7 +38,7 @@ class ProductController {
     // POST: /api/products/
     async create(req: Request, res: Response) {
         try {
-            const id = await ProductModel.create(req.body);
+            const id = await ProductServicesService.create(req.body);
             res.status(201).json({ 
                 message: 'Record created', 
                 id 
@@ -50,7 +52,7 @@ class ProductController {
     async update(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id as string);
-            const success = await ProductModel.update(id, req.body);
+            const success = await ProductServicesService.update(id, req.body);
             
             if (!success) {
                 return res.status(404).json({ message: 'Product not found for update' });
@@ -66,7 +68,7 @@ class ProductController {
     async delete(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id as string);
-            const success = await ProductModel.delete(id);
+            const success = await ProductServicesService.delete(id);
             
             if (!success) {
                 return res.status(404).json({ message: 'Record does not exist' });

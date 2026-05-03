@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import ExpenseModel from '../models/expense.model';
+import ExpenseService from '../service/expense.service';
 
 class ExpenseController {
     
@@ -11,7 +11,7 @@ class ExpenseController {
                 return res.status(400).json({ message: "Description and Amount are required." });
             }
 
-            const expenseId = await ExpenseModel.create({
+            const expenseId = await ExpenseService.create({
                 Description,
                 Amount,
                 Admin_Registry_ID: Admin_Registry_ID || null
@@ -28,7 +28,7 @@ class ExpenseController {
 
     async listAll(req: Request, res: Response) {
         try {
-            const expenses = await ExpenseModel.getAll();
+            const expenses = await ExpenseService.getAll();
             return res.json(expenses);
         } catch (error: any) {
             return res.status(500).json({ error: error.message });
@@ -38,7 +38,7 @@ class ExpenseController {
     async getDetail(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const expense = await ExpenseModel.getById(Number(id));
+            const expense = await ExpenseService.getById(Number(id));
             
             if (!expense) {
                 return res.status(404).json({ message: "Expense not found." });
@@ -53,7 +53,7 @@ class ExpenseController {
     async remove(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const success = await ExpenseModel.delete(Number(id));
+            const success = await ExpenseService.delete(Number(id));
 
             return success 
                 ? res.json({ message: "Expense record deleted." })

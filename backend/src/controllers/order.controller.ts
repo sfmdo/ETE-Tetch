@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
 import connection from '../config/database';
-import OrderModel, { LogisticsStatus } from '../models/order.model';
-import OrderDetailModel from '../models/order_detail.model';
-import ProductModel from '../models/product_services.model';
+import { LogisticsStatus } from '../models/order.model'
+import OrderService from '../service/order.service';
+import OrderDetailService from '../service/order_detail.service';
+import ProductServicesService from '../service/product_services.service';
 
 class OrderController {
 
-    //1.- CREATE INITIAL ORDER (WITH BASE SERVICE)
     async createInitialOrder(req: Request, res: Response) {
         const conn = await connection.promise().getConnection();
         try {
@@ -20,10 +20,10 @@ class OrderController {
 
             const orderNumber = `ORD-${Date.now()}`;
 
-            const service = await ProductModel.getById(Service_ID);
+            const service = await ProductServicesService.getById(Service_ID);
             if (!service) throw new Error("The selected service does not exist.");
 
-            const orderId = await OrderModel.create({
+            const orderId = await OrderService.create({
                 Order_Number: orderNumber,
                 Client_ID,
                 Brand_Model,
@@ -33,7 +33,7 @@ class OrderController {
                 Pending_Balance: service.Final_Price
             }, conn as any);
 
-            await OrderDetailModel.create({
+            await OrderDetailService.create({
                 Order_ID: orderId,
                 Product_ID: Service_ID,
                 Quantity: 1,
@@ -61,7 +61,6 @@ class OrderController {
         }
     }
 
-    // 2. ADD ITEMS/PARTS AND UPDATE TOTAL
     async addItemsToOrder(req: Request, res: Response) {
         const conn = await connection.promise().getConnection();
         try {
@@ -69,7 +68,7 @@ class OrderController {
             
             await conn.beginTransaction();
 
-            const currentOrder = await OrderModel.getById(Order_ID);
+            const currentOrder = await OrderService.getById(Order_ID);
             if (!currentOrder) throw new Error("Order not found");
             
             if (currentOrder.Logistics_Status === LogisticsStatus.PAID) {
@@ -79,13 +78,13 @@ class OrderController {
             let extraTotal = 0;
 
             for (const item of items) {
-                const product = await ProductModel.getById(item.Product_ID);
+                const product = await ProductServicesService.getById(item.Product_ID);
                 if (!product) throw new Error(`Product ${item.Product_ID} does not exist`);
 
                 const subtotal = product.Final_Price * item.Quantity;
                 extraTotal += subtotal;
 
-                await OrderDetailModel.create({
+                await OrderDetailService.create({
                     Order_ID,
                     Product_ID: item.Product_ID,
                     Quantity: item.Quantity,
@@ -94,7 +93,7 @@ class OrderController {
                 }, conn as any);
 
                 if (product.Item_Type === 'PRODUCT') {
-                    const success = await ProductModel.deductStock(item.Product_ID, item.Quantity, conn as any);
+                    const success = await ProductServicesService.deductStock(item.Product_ID, item.Quantity, conn as any);
                     if (!success) throw new Error(`Insufficient stock for: ${product.Name}`);
                 }
             }
@@ -102,7 +101,7 @@ class OrderController {
             const newTotal = Number(currentOrder.Order_Total) + extraTotal;
             const newBalance = Number(currentOrder.Pending_Balance) + extraTotal;
             
-            await OrderModel.updateTotals(Order_ID, newTotal, newBalance, conn as any);
+            await OrderService.updateTotals(Order_ID, newTotal, newBalance, conn as any);
 
             await conn.commit();
             return res.status(200).json({ message: "Items added and total updated", newTotal });
@@ -115,7 +114,6 @@ class OrderController {
         }
     }
 
-    // 3. UPDATE LOGISTICS STATUS
     async updateStatus(req: Request, res: Response) {
         try {
             const { id } = req.params;
@@ -125,7 +123,7 @@ class OrderController {
                 return res.status(400).json({ message: "Invalid logistics status" });
             }
 
-            const success = await OrderModel.updateStatus(Number(id), status);
+            const success = await OrderService.updateStatus(Number(id), status);
             return success 
                 ? res.json({ message: `Status updated to ${status}` })
                 : res.status(404).json({ message: "Order not found" });
@@ -144,14 +142,14 @@ class OrderController {
                 return res.status(400).json({ message: "Diagnosis and solution are required." });
             }
 
-            const success = await OrderModel.updateTechnicalInfo(Number(id), {
+            const success = await OrderService.updateTechnicalInfo(Number(id), {
                 Final_Diagnosis,
                 Applied_Solution,
                 Technician_ID
             });
 
             if (success) {
-                await OrderModel.updateStatus(Number(id), LogisticsStatus.COMPLETED);
+                await OrderService.updateStatus(Number(id), LogisticsStatus.COMPLETED);
                 return res.json({ message: "Technical information updated and order marked as completed." });
             }
 
@@ -164,7 +162,7 @@ class OrderController {
     async getOrderById(req: Request, res: Response) {
     try {
         const { id } = req.params;
-        const order = await OrderModel.getAll();
+        const order = await OrderService.getAll();
         
         if (!order) return res.status(404).json({ message: "No Orders found" });
         
@@ -176,7 +174,7 @@ class OrderController {
 
     async getAllOrders(req: Request, res: Response) {
         try {
-            const order = await OrderModel.getAll();
+            const order = await OrderService.getAll();
             if (!order) return res.status(404).json({ message: "No order found" });
             return res.json(order);
         } catch (error: any) {
@@ -188,11 +186,11 @@ class OrderController {
             const { id } = req.params;
         
             // Obtenemos la cabecera
-            const order = await OrderModel.getById(Number(id));
+            const order = await OrderService.getById(Number(id));
             if (!order) return res.status(404).json({ message: "Orden no encontrada" });
 
-            // Obtenemos los productos/servicios asociados desde OrderDetailModel
-            const details = await OrderDetailModel.getByOrderId(Number(id));
+            // Obtenemos los productos/servicios asociados desde OrderDetailService
+            const details = await OrderDetailService.getByOrderId(Number(id));
 
             return res.json({
                 ...order,
@@ -202,6 +200,54 @@ class OrderController {
             return res.status(500).json({ error: error.message });
         }
     }
+
+    async payOrder(req: Request, res: Response) {
+        try {
+            const id = Number(req.params.id);
+            const { amount } = req.body;
+
+            if (isNaN(id)) {
+                return res.status(400).json({ message: "ID de orden inválido." });
+            }
+
+            if (!amount || typeof amount !== 'number' || amount <= 0) {
+                return res.status(400).json({ message: "El monto del pago debe ser un número mayor a 0." });
+            }
+
+            const success = await OrderService.registerPayment(id, amount);
+
+            if (success) {
+                return res.json({ message: "Pago registrado correctamente. Balances y estatus actualizados." });
+            } else {
+                return res.status(404).json({ message: "Orden no encontrada." });
+            }
+        } catch (error: any) {
+            console.error("Error al registrar el pago:", error);
+            return res.status(500).json({ 
+                message: "Error interno al procesar el pago.", 
+                error: error.message || error 
+            });
+        }
+    }
+
+    // 1. Obtener TODAS las órdenes de un cliente (Historial)
+    async getClientOrders(req: Request, res: Response) {
+        try {
+            const clientId = Number(req.params.clientId);
+            
+            if (isNaN(clientId)) {
+                return res.status(400).json({ message: "ID de cliente inválido." });
+            }
+
+            const orders = await OrderService.getAllByClient(clientId);
+            return res.json(orders);
+        } catch (error: any) {
+            console.error("Error al obtener órdenes del cliente:", error);
+            return res.status(500).json({ message: "Error interno del servidor.", error: error.message });
+        }
+    }
+
+
 }
 
 export default new OrderController();

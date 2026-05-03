@@ -297,8 +297,8 @@ The system tracks the lifecycle of a service through the `Logistics_Status` (Enu
 
 *   **PENDING:** Initial state. Equipment received, pending diagnosis.
 *   **IN_PROGRESS:** Technician is currently working on the equipment.
-*   **COMPLETED:** Work finished. Diagnosis and solution registered. Ready for pickup.
-*   **PAID:** Financial balance is zeroed, and the process is closed.
+*   **COMPLETED:** Work finished. Diagnosis and solution registered. Ready for pickup. (If the balance is already $0, it will bypass this and go directly to PAID).
+*   **PAID:** Financial balance is zeroed AND the technical work is finished. The process is fully closed.
 
 ---
 
@@ -314,12 +314,20 @@ Retrieves a complete list of all service orders for management and tracking.
 ```json
 [
   {
-    "Order_ID": 101,
-    "Order_Number": "ORD-1713824561000",
-    "Client_ID": 10,
-    "Logistics_Status": "PENDING",
-    "Order_Total": 150.00,
-    "Creation_Date": "2026-04-22T10:00:00Z"
+  "Applied_Solution": null
+  "Brand_Model": "Huawei P20"
+  "Client_ID": 1
+  "Client_Name": "Santiago"
+  "Creation_Date": "2026-04-28T01:40:10.000Z"
+  "Final_Diagnosis": null
+  "Logistics_Status": "COMPLETED"
+  "Order_ID": 4
+  "Order_Number": "ORD-1777340410406"
+  "Order_Total": "185.60"
+  "Pending_Balance": "185.60"
+  "Reported_Fault": "No prende"
+  "Technician_ID": null
+  "Technician_Name": null
   }
 ]
 ```
@@ -341,23 +349,28 @@ Retrieves the order header and an array of all associated products/services with
 
 ```json
 {
-  "Order_ID": 101,
-  "Order_Number": "ORD-1713824561000",
+  "Order_ID": 3,
+  "Order_Number": "ORD-1777319799559",
+  "Client_ID": 1,
+  "Client_Name": "Client",
+  "Technician_ID": 1,
+  "Technician_Name": "Technician",
+  "Brand_Model": "Google hhjhjhf",
+  "Reported_Fault": "ojoh",
+  "Final_Diagnosis": "El pepe",
+  "Applied_Solution": "sda",
   "Logistics_Status": "IN_PROGRESS",
+  "Order_Total": 1229.60,
+  "Pending_Balance": 1229.60,
+  "Creation_Date": "2026-04-27T13:56:39.000Z",
   "Items": [
     {
-      "Product_ID": 5,
-      "Product_Name": "Base Diagnostic Service",
+      "Product_ID": 2,
+      "Product_Name": "Mantenimiento de computadora",
       "Quantity": 1,
-      "Unit_Price": 150.00,
-      "Item_Type": "SERVICE"
-    },
-    {
-      "Product_ID": 12,
-      "Product_Name": "OLED Screen Replacement",
-      "Quantity": 1,
-      "Unit_Price": 120.00,
-      "Item_Type": "PRODUCT"
+      "Unit_Price": 185.60,
+      "Product_Type": "SERVICE",
+      "Line_Subtotal": 185.60
     }
   ]
 }
@@ -392,7 +405,7 @@ Adds extra parts/services. Updates total and deducts inventory.
 ```
 
 ### 4.6. Register Technical Diagnosis
-Final report. Automatically changes status to `COMPLETED`.
+Final report or partial reports.
 
 *   **Endpoint:** `PUT /api/orders/:id/diagnosis`
 *   **Request Body:** 
@@ -403,6 +416,7 @@ Final report. Automatically changes status to `COMPLETED`.
   "Applied_Solution": "..." 
 }
 ```
+*Note: If the requested status is COMPLETED but the order has a Pending_Balance of $0, the database will automatically override the request and set it to PAID.*
 
 ### 4.7. Update Logistics Status
 Manual override for the order's state.
@@ -415,6 +429,68 @@ Manual override for the order's state.
 }
 ```
 
+### 4.8. Register Payment (Abono/Cobro)
+Registers a partial or full payment. Deducts the amount from the `Pending_Balance` directly in the database. If the new balance reaches 0 and the order was already `COMPLETED`, it automatically closes the order by changing the status to `PAID`.
+
+* **Endpoint:** `POST /api/orders/:id/pay`
+* **Access:** Authenticated (Admin, User)
+* **Request Body:** ```json
+{ 
+  "amount": 185.60 
+}
+
+**Response (200 OK)**:
+```
+{
+  "message": "Pago registrado correctamente."
+}
+```
+### 4.9. Get Client Orders (History)
+
+Retrieves a complete list of all service orders associated with a specific client. This endpoint is designed for the client portal dashboard.
+
+* **Endpoint:** `GET /api/orders/client/:clientId`
+
+* **Access:** Authenticated (Admin, Client - Clients should only be able to query their own ID)
+
+**Response (200 OK):**
+```json
+[
+  {
+    "Order_ID": 4,
+    "Order_Number": "ORD-1777340410406",
+    "Client_ID": 1,
+    "Client_Name": "Santiago",
+    "Technician_ID": 2,
+    "Technician_Name": "Technician Name",
+    "Brand_Model": "Huawei P20",
+    "Reported_Fault": "No prende",
+    "Final_Diagnosis": "Batería inflada",
+    "Applied_Solution": "Reemplazo de batería",
+    "Logistics_Status": "PAID",
+    "Order_Total": "185.60",
+    "Pending_Balance": "0.00",
+    "Creation_Date": "2026-04-28T01:40:10.000Z"
+  },
+  {
+    "Order_ID": 7,
+    "Order_Number": "ORD-1777351234567",
+    "Client_ID": 1,
+    "Client_Name": "Santiago",
+    "Technician_ID": null,
+    "Technician_Name": null,
+    "Brand_Model": "Dell XPS 13",
+    "Reported_Fault": "Pantalla rota",
+    "Final_Diagnosis": null,
+    "Applied_Solution": null,
+    "Logistics_Status": "PENDING",
+    "Order_Total": "0.00",
+    "Pending_Balance": "0.00",
+    "Creation_Date": "2026-04-30T10:15:00.000Z"
+  }
+]
+```
+
 ---
 
 ## Order Module Error Handling
@@ -424,6 +500,7 @@ Manual override for the order's state.
 | 400 Bad Request | {"message": "Brand, Model, Description... are required"} | Missing mandatory fields in initial reception. |
 | 400 Bad Request | {"error": "Insufficient stock for: [Name]"} | Attempted to add a product that exceeds current inventory. |
 | 400 Bad Request | {"error": "Cannot add products to an already paid order"} | Business logic violation: Order is already closed. |
+| 400 Bad Request | {"message": "El monto del pago debe ser mayor a 0."} | Attempted to register a negative or zero payment amount in the `/pay` endpoint. |
 | 404 Not Found | {"message": "Order not found"} | The Order_ID provided does not exist. |
 | 500 Internal Error | {"error": "[Database Error Details]"} | Transaction failed or database connection issue. |
 

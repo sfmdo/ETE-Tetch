@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import UserModel from '../models/user.model';
+import UserService from '../service/user.service';
 import { AuthRequest } from '../middleware/auth.middleware'; 
 
 class UserController {
@@ -12,7 +12,7 @@ class UserController {
                 return res.status(400).json({ message: 'User ID not found in token' });
             }
 
-            const user = await UserModel.findById(userId);
+            const user = await UserService.findById(userId);
 
             if (!user) {
                 return res.status(404).json({ message: 'User not found' });
@@ -45,14 +45,14 @@ class UserController {
                 return res.status(400).json({ message: 'No valid fields provided for update' });
             }
 
-            const isUpdated = await UserModel.update(userId, updateData);
+            const isUpdated = await UserService.update(userId, updateData);
 
             if (!isUpdated) {
                 return res.status(404).json({ message: 'User not found or no changes made' });
             }
 
             // Opcional: Traer los datos frescos para devolverlos al frontend
-            const updatedUser = await UserModel.findById(userId);
+            const updatedUser = await UserService.findById(userId);
 
             return res.status(200).json({
                 message: 'Profile updated successfully',
