@@ -2,7 +2,7 @@
   
   <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
     <div>
-      <h1 class="text-2xl font-bold text-slate-900 tracking-tight mb-1">Master Inventory</h1>
+      <h1 class="text-2xl font-bold text-slate-900 tracking-tight mb-1">Inventario</h1>
       <p class="text-slate-500 text-sm">Panel de control de activos y servicios técnicos.</p>
     </div>
     <div class="flex items-center gap-3">
@@ -14,12 +14,10 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-10">
     <div *ngFor="let stat of [
       {label: 'Total SKUs', val: stats.totalSkus, icon: 'inventory_2', color: 'text-blue-600'},
-      {label: 'Stock Crítico', val: stats.lowStockCount, icon: 'warning', color: 'text-amber-500'},
       {label: 'Valor Total', val: (stats.inventoryValue | currency), icon: 'payments', color: 'text-emerald-600'},
-      {label: 'Reparaciones', val: stats.pendingRepairs, icon: 'build', color: 'text-slate-600'}
     ]" class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
       <div class="flex items-center justify-between mb-3">
         <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{stat.label}}</span>
