@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserConfigService } from '../../services/user-config.service';
 import { UserProfile, UpdateProfilePayload, ChangePasswordPayload } from '../../models/user-config.model';
+import { PrivacyNoticeComponent } from '../privacy-notice/privacy-notice';
+import { TermsAndConditionsComponent } from '../terms-and-conditions/terms-and-conditions';
 
 
 @Component({
   selector: 'app-user-config',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PrivacyNoticeComponent, TermsAndConditionsComponent],
   templateUrl: './user-config.html',
   styleUrl: './user-config.css',
 })
@@ -42,6 +44,9 @@ export class UserConfigComponent implements OnInit {
   isLoading: boolean = true;
   isSavingPassword: boolean = false;
 
+  showTerms: boolean = false;
+  showPrivacy: boolean = false;
+  
   ngOnInit(): void {
     this.loadUserConfig();
   }
@@ -109,7 +114,6 @@ export class UserConfigComponent implements OnInit {
 
   this.configService.changePassword(this.contrasenaData).subscribe({
     next: (res) => {
-      // Éxito: Envolvemos en la zona activa de Angular
       this.zone.run(() => {
         this.isSavingPassword = false;
         this.showStatus(res.message || 'Contraseña actualizada con éxito.', false);
@@ -136,7 +140,6 @@ export class UserConfigComponent implements OnInit {
           errMsg = err.message;
         }
 
-        // Ejecutamos la alerta roja
         this.showStatus(errMsg, true);
         this.cdr.detectChanges();
       });

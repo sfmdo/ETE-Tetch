@@ -1,35 +1,46 @@
 <div class="flex-1 md:ml-64 flex flex-col min-h-screen bg-surface font-body">
-    <div class="p-8 lg:p-12 max-w-5xl w-full mx-auto space-y-10">
+    <!-- Se eliminó 'mx-auto' para que el bloque se cargue hacia la izquierda respetando el padding -->
+    <div class="p-8 lg:p-12 max-w-5xl w-full space-y-8">
         
-        <section class="space-y-2">
+        <!-- Encabezado de página -->
+        <section class="space-y-2 mb-4">
             <h2 class="text-4xl font-extrabold font-headline tracking-tight text-primary">Configuración de Usuario</h2>
             <p class="text-on-surface-variant max-w-2xl leading-relaxed">Administra la información personal, los detalles de contacto y las preferencias de seguridad de la plataforma.</p>
         </section>
 
+        <!-- Alertas -->
         <div *ngIf="mensaje" 
              [ngClass]="error ? 'bg-red-50 text-red-800 border-red-200' : 'bg-green-50 text-green-800 border-green-200'" 
-             class="p-4 rounded-xl border font-semibold text-sm transition-all shadow-sm animate-fade-in">
+             class="p-4 rounded-xl border font-semibold text-sm transition-all shadow-sm animate-fade-in max-w-3xl">
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-lg">{{ error ? 'error' : 'check_circle' }}</span>
                 <span>{{ mensaje }}</span>
             </div>
         </div>
 
-        <div *ngIf="isLoading" class="text-center text-on-surface-variant p-10 font-medium">
-           Cargando información del perfil...
+        <!-- Estado de carga (Este sí se mantiene centrado por UX) -->
+        <div *ngIf="isLoading" class="flex items-center gap-3 text-on-surface-variant p-10 font-medium">
+            <span class="w-5 h-5 border-2 border-primary/20 border-t-primary rounded-full animate-spin"></span>
+            Cargando información del perfil...
         </div>
 
-        <div *ngIf="!isLoading" class="space-y-10">
+        <!-- Contenedor Principal de Tarjetas -->
+        <div *ngIf="!isLoading" class="space-y-8">
             
+            <!-- TARJETA 1: Información Personal -->
             <div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_4px_32px_rgba(0,0,0,0.02)] border border-outline-variant/10">
                 <div class="flex items-center justify-between mb-8">
-                    <h4 class="font-headline font-bold text-2xl text-primary">Información Personal</h4>
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-2xl">person</span>
+                        <h4 class="font-headline font-bold text-2xl text-primary">Información Personal</h4>
+                    </div>
                     <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant bg-surface-container-high px-2.5 py-1 rounded">
                         {{ configuracion.Role }}
                     </span>
                 </div>
                 
                 <form #configForm="ngForm" (ngSubmit)="guardarCambios()" class="space-y-8">
+                    <!-- Grid simétrico de 2 columnas -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         
                         <div class="space-y-2">
@@ -56,7 +67,8 @@
                             />
                         </div>
 
-                        <div class="space-y-2 opacity-80 col-span-2">
+                        <!-- El correo ocupa ambas columnas para mantener la simetría -->
+                        <div class="space-y-2 opacity-80 col-span-1 md:col-span-2 max-w-2xl">
                             <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">Dirección de Correo Electrónico</label>
                             <div class="flex items-center justify-between py-3 bg-surface-container-low/50 px-4 rounded-lg">
                                 <span class="text-on-surface font-medium">{{ configuracion.Email }}</span>
@@ -66,89 +78,144 @@
                         </div>
                     </div>
 
-                    <div class="pt-8 flex flex-col sm:flex-row gap-4 justify-end border-t border-outline-variant/10">
-                        <button 
-                            type="button" 
-                            (click)="cancelar()" 
-                            class="px-8 py-3 rounded text-primary font-bold text-sm hover:bg-surface-container-high transition-colors cursor-pointer">
-                            Cancelar
-                        </button>
-                        
+                    <!-- Botones alineados a la izquierda (justify-start) -->
+                    <div class="pt-8 flex flex-col sm:flex-row-reverse sm:justify-end gap-4 border-t border-outline-variant/10">
                         <button 
                             type="submit" 
                             [disabled]="configForm.invalid"
-                            class="px-10 py-3 rounded bg-primary text-on-primary font-bold text-sm shadow-md hover:shadow-lg bg-gradient-to-br from-primary to-primary-container disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-all">
+                            class="px-8 py-3 rounded bg-primary text-on-primary font-bold text-sm shadow-md hover:shadow-lg bg-gradient-to-br from-primary to-primary-container disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-all">
                             Guardar Cambios
+                        </button>
+                        <button 
+                            type="button" 
+                            (click)="cancelar()" 
+                            class="px-8 py-3 rounded text-primary font-bold text-sm hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+                            Cancelar
                         </button>
                     </div>
                 </form>
             </div>
 
+            <!-- TARJETA 2: Seguridad y Credenciales -->
             <div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_4px_32px_rgba(0,0,0,0.02)] border border-outline-variant/10">
-    <div class="flex items-center gap-3 mb-2">
-        <span class="material-symbols-outlined text-primary text-2xl">shield</span>
-        <h4 class="font-manrope font-bold text-2xl text-primary">Seguridad y Credenciales</h4>
+                <div class="mb-8">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-primary text-2xl">shield</span>
+                        <h4 class="font-headline font-bold text-2xl text-primary">Seguridad y Credenciales</h4>
+                    </div>
+                    <p class="text-on-surface-variant text-sm">Actualiza tu contraseña periódicamente para mantener tu cuenta segura.</p>
+                </div>
+                
+                <form #passwordForm="ngForm" (ngSubmit)="actualizarContrasena(passwordForm)" class="space-y-8">
+                    <input type="text" name="username" [value]="configuracion.Email" autocomplete="username" class="hidden" />
+
+                    <!-- Estructura cambiada a 2 columnas para no apretar los inputs y alinear a la izquierda -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl">
+                        
+                        <div class="space-y-2 md:col-span-2 max-w-md">
+                            <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">Contraseña Actual</label>
+                            <input 
+                                name="currentPassword"
+                                [(ngModel)]="contrasenaData.currentPassword"
+                                autocomplete="current-password"
+                                class="w-full bg-surface-container-low border-none focus:ring-0 focus:bg-surface-container-lowest border-b-2 border-transparent focus:border-primary px-4 py-3 text-on-surface font-medium rounded-t-md transition-all" 
+                                type="password" 
+                                placeholder="••••••••"
+                                required
+                            />
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">Nueva Contraseña</label>
+                            <input 
+                                name="newPassword"
+                                [(ngModel)]="contrasenaData.newPassword"
+                                autocomplete="new-password"
+                                class="w-full bg-surface-container-low border-none focus:ring-0 focus:bg-surface-container-lowest border-b-2 border-transparent focus:border-primary px-4 py-3 text-on-surface font-medium rounded-t-md transition-all" 
+                                type="password" 
+                                placeholder="Mínimo 6 caracteres"
+                                minlength="6"
+                                required
+                            />
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">Confirmar Nueva Contraseña</label>
+                            <input 
+                                name="confirmPassword"
+                                [(ngModel)]="confirmarPassword"
+                                autocomplete="new-password"
+                                class="w-full bg-surface-container-low border-none focus:ring-0 focus:bg-surface-container-lowest border-b-2 border-transparent focus:border-primary px-4 py-3 text-on-surface font-medium rounded-t-md transition-all" 
+                                type="password" 
+                                placeholder="Repite la contraseña"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Botón alineado a la izquierda (justify-start) -->
+                    <div class="pt-8 flex justify-start border-t border-outline-variant/10">
+                        <button 
+                            type="submit" 
+                            [disabled]="passwordForm.invalid || isSavingPassword"
+                            class="px-8 py-3 rounded bg-[#002542] text-white font-bold text-sm shadow-md hover:shadow-lg hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-all flex items-center gap-2">
+                            <span *ngIf="isSavingPassword" class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
+                            {{ isSavingPassword ? 'Actualizando...' : 'Actualizar Contraseña' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- TARJETA 3: Documentación Legal (Ahora integrada en el flujo principal) -->
+            <div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_4px_32px_rgba(0,0,0,0.02)] border border-outline-variant/10">
+                <div class="mb-8">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="material-symbols-outlined text-primary text-2xl">gavel</span>
+                        <h4 class="font-headline font-bold text-2xl text-primary">Documentación Legal</h4>
+                    </div>
+                    <p class="text-on-surface-variant text-sm">Consulta los lineamientos legales y la protección de tus datos personales en ETE-Tech.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl">
+                    <button 
+                        type="button"
+                        (click)="showTerms = true"
+                        class="flex items-center justify-between p-4 bg-surface-container-low hover:bg-surface-container-high rounded-xl border border-outline-variant/10 transition-all group cursor-pointer">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined">description</span>
+                            </div>
+                            <div class="text-left">
+                                <span class="block font-bold text-primary text-sm">Términos y Condiciones</span>
+                                <span class="text-[10px] text-on-surface-variant uppercase tracking-widest">Uso de la plataforma</span>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </button>
+
+                    <button 
+                        type="button"
+                        (click)="showPrivacy = true"
+                        class="flex items-center justify-between p-4 bg-surface-container-low hover:bg-surface-container-high rounded-xl border border-outline-variant/10 transition-all group cursor-pointer">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined">policy</span>
+                            </div>
+                            <div class="text-left">
+                                <span class="block font-bold text-primary text-sm">Aviso de Privacidad</span>
+                                <span class="text-[10px] text-on-surface-variant uppercase tracking-widest">Protección de datos</span>
+                            </div>
+                        </div>
+                        <span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
     </div>
-    <p class="text-on-surface-variant text-sm mb-8">Actualiza tu contraseña periódicamente para mantener tu cuenta segura.</p>
-    
-    <form #passwordForm="ngForm" (ngSubmit)="actualizarContrasena(passwordForm)" class="space-y-8">
-        <input type="text" name="username" [value]="configuracion.Email" autocomplete="username" class="hidden" />
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            <div class="space-y-2">
-                <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">Contraseña Actual</label>
-                <input 
-                    name="currentPassword"
-                    [(ngModel)]="contrasenaData.currentPassword"
-                    autocomplete="current-password"
-                    class="w-full bg-surface-container-low border-none focus:ring-0 focus:bg-surface-container-lowest border-b-2 border-transparent focus:border-primary px-4 py-3 text-on-surface font-medium rounded-t-md transition-all" 
-                    type="password" 
-                    placeholder="••••••••"
-                    required
-                />
-            </div>
-            
-            <div class="space-y-2">
-                <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">Nueva Contraseña</label>
-                <input 
-                    name="newPassword"
-                    [(ngModel)]="contrasenaData.newPassword"
-                    autocomplete="new-password"
-                    class="w-full bg-surface-container-low border-none focus:ring-0 focus:bg-surface-container-lowest border-b-2 border-transparent focus:border-primary px-4 py-3 text-on-surface font-medium rounded-t-md transition-all" 
-                    type="password" 
-                    placeholder="Mínimo 6 caracteres"
-                    minlength="6"
-                    required
-                />
-            </div>
+    <!-- Modales -->
+    <app-terms-and-conditions [isOpen]="showTerms" (close)="showTerms = false"></app-terms-and-conditions>
+    <app-privacy-notice [isOpen]="showPrivacy" (close)="showPrivacy = false"></app-privacy-notice>
 
-            <div class="space-y-2">
-                <label class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant">Confirmar Nueva Contraseña</label>
-                <input 
-                    name="confirmPassword"
-                    [(ngModel)]="confirmarPassword"
-                    autocomplete="new-password"
-                    class="w-full bg-surface-container-low border-none focus:ring-0 focus:bg-surface-container-lowest border-b-2 border-transparent focus:border-primary px-4 py-3 text-on-surface font-medium rounded-t-md transition-all" 
-                    type="password" 
-                    placeholder="Repite la contraseña"
-                    required
-                />
-            </div>
-        </div>
-
-        <div class="pt-8 flex justify-end border-t border-outline-variant/10">
-            <button 
-                type="submit" 
-                [disabled]="passwordForm.invalid || isSavingPassword"
-                class="px-10 py-3 rounded bg-[#002542] text-white font-bold text-sm shadow-md hover:shadow-lg hover:bg-opacity-90 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-all flex items-center gap-2">
-                <span *ngIf="isSavingPassword" class="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
-                {{ isSavingPassword ? 'Actualizando...' : 'Actualizar Contraseña' }}
-            </button>
-        </div>
-    </form>
-</div>
-
-        </div>
-    </div>
 </div>

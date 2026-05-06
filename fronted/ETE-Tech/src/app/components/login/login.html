@@ -83,7 +83,51 @@
               placeholder="••••••••" required type="password"/>
           </div>
         </div>
+        <div class="space-y-3 py-2">
+  <div class="flex items-start gap-3">
+    <div class="flex items-center h-5">
+      <input 
+        id="terms" 
+        name="terms" 
+        type="checkbox" 
+        [(ngModel)]="acceptedTerms"
+        class="w-4 h-4 text-primary border-outline-variant rounded focus:ring-primary focus:ring-offset-0 bg-surface-container-low transition-colors cursor-pointer"
+        required>
+    </div>
+    <label for="terms" class="text-xs text-on-surface-variant leading-normal">
+      Acepto los 
+      <button type="button" (click)="showTerms = true" class="text-primary font-bold hover:underline">Términos y Condiciones</button> 
+      de uso de la plataforma.
+    </label>
+  </div>
 
+  <div class="flex items-start gap-3">
+    <div class="flex items-center h-5">
+      <input 
+        id="privacy" 
+        name="privacy" 
+        type="checkbox" 
+        [(ngModel)]="acceptedPrivacy"
+        class="w-4 h-4 text-primary border-outline-variant rounded focus:ring-primary focus:ring-offset-0 bg-surface-container-low transition-colors cursor-pointer"
+        required>
+    </div>
+    <label for="privacy" class="text-xs text-on-surface-variant leading-normal">
+      He leído y acepto el 
+      <button type="button" (click)="showPrivacy = true" class="text-primary font-bold hover:underline">Aviso de Privacidad</button> 
+      integral.
+    </label>
+  </div>
+</div>
+
+<app-terms-and-conditions 
+  [isOpen]="showTerms" 
+  (close)="showTerms = false">
+</app-terms-and-conditions>
+
+<app-privacy-notice 
+  [isOpen]="showPrivacy" 
+  (close)="showPrivacy = false">
+</app-privacy-notice>
         <button
           class="w-full py-3 px-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-medium rounded shadow-md hover:shadow-lg hover:-translate-y-px transition-all active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           type="submit">

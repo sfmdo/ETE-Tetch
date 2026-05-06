@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router'; 
 import { AuthService } from '../../services/auth.service';
 import { EmailService } from '../../services/email.service';
+import { TermsAndConditionsComponent } from '../terms-and-conditions/terms-and-conditions';
+import { PrivacyNoticeComponent } from '../privacy-notice/privacy-notice';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, TermsAndConditionsComponent, PrivacyNoticeComponent],
   templateUrl: './login.html',
   styleUrls: ['./login.css'] 
 })
@@ -22,6 +24,12 @@ export class LoginComponent {
   resetEmail = '';
   modalErrorMessage = '';
   isLoadingReset = false;
+
+  acceptedTerms = false;
+  acceptedPrivacy = false;
+
+  showTerms = false;
+  showPrivacy = false;
 
   constructor(
     private authService: AuthService, 
@@ -38,6 +46,12 @@ export class LoginComponent {
     if (!this.email || !this.password) {
       this.errorMessage = 'Por favor ingresa tu correo y contraseña.';
       this.cdr.detectChanges()
+      return;
+    }
+
+    if (!this.acceptedTerms || !this.acceptedPrivacy) {
+      this.errorMessage = 'Debes aceptar los términos y el aviso de privacidad para continuar.';
+      this.cdr.detectChanges();
       return;
     }
 
