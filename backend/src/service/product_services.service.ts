@@ -42,13 +42,13 @@ class ProductServicesService {
     }
 
     async delete(id: number): Promise<boolean> {
-        const query = `DELETE FROM PRODUCTS_SERVICES WHERE Product_ID = ?`;
+        const query = `UPDATE PRODUCTS_SERVICES SET Status = 0 WHERE Product_ID = ?`;
         const [result] = await connection.promise().query<ResultSetHeader>(query, [id]);
         return result.affectedRows > 0;
     }
 
     async get(filters?: Partial<IProductServices>): Promise<IProductServices[]> {
-        let query = `SELECT * FROM PRODUCTS_SERVICES`;
+        let query = `SELECT * FROM PRODUCTS_SERVICES WHERE Status = 1`;
         const params: any[] = [];
 
         if (filters && Object.keys(filters).length > 0) {
