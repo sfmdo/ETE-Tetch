@@ -12,4 +12,7 @@ router.get('/profile', userController.getProfile);
 // PATCH: http://localhost:3000/api/users/profile
 router.patch('/profile', userController.updateProfile);
 
+// PATCH: http://localhost:3000/api/users/change-password
+router.put('/change-password', userController.changePassword);
+
 export default router;

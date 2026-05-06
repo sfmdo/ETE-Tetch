@@ -1,0 +1,54 @@
+<div class="p-8 space-y-6">
+  <header class="flex justify-between items-center border-b border-slate-100 pb-4">
+    <div>
+      <h2 class="text-2xl font-headline font-bold text-primary">Datos de Facturación</h2>
+      <p class="text-xs text-on-surface-variant font-medium uppercase tracking-widest mt-1">CFDI Versión 4.0</p>
+    </div>
+    <button (click)="close.emit()" class="text-slate-400 hover:text-error transition-colors">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </header>
+
+  <form [formGroup]="facturaForm" (ngSubmit)="generarXML()" class="space-y-4">
+    <div class="space-y-1">
+      <label class="text-[10px] font-black uppercase tracking-tighter text-slate-500">RFC del Receptor</label>
+      <input formControlName="rfc" type="text" placeholder="ABCD800101XXX"
+             class="w-full bg-surface-container-low border border-slate-200 rounded-lg px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all uppercase">
+    </div>
+
+    <div class="space-y-1">
+      <label class="text-[10px] font-black uppercase tracking-tighter text-slate-500">Nombre o Razón Social (Sin Régimen Capital)</label>
+      <input formControlName="nombre" type="text" placeholder="JUAN PEREZ GARCIA"
+             class="w-full bg-surface-container-low border border-slate-200 rounded-lg px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all uppercase">
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div class="space-y-1">
+        <label class="text-[10px] font-black uppercase tracking-tighter text-slate-500">Código Postal Fiscal</label>
+        <input formControlName="codigoPostal" type="text" placeholder="45000"
+               class="w-full bg-surface-container-low border border-slate-200 rounded-lg px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+      </div>
+
+      <div class="space-y-1">
+        <label class="text-[10px] font-black uppercase tracking-tighter text-slate-500">Régimen Fiscal</label>
+        <select formControlName="regimenFiscal" 
+                class="w-full bg-surface-container-low border border-slate-200 rounded-lg px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+          <option *ngFor="let r of regimenes" [value]="r.id">{{ r.text }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="space-y-1">
+      <label class="text-[10px] font-black uppercase tracking-tighter text-slate-500">Uso del CFDI</label>
+      <select formControlName="usoCFDI" 
+              class="w-full bg-surface-container-low border border-slate-200 rounded-lg px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+        <option *ngFor="let u of usosCFDI" [value]="u.id">{{ u.text }}</option>
+      </select>
+    </div>
+
+    <button type="submit" [disabled]="facturaForm.invalid"
+            class="w-full bg-primary text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-slate-900 transition-all shadow-lg disabled:opacity-30 disabled:cursor-not-allowed mt-4">
+      Generar y Descargar XML
+    </button>
+  </form>
+</div>

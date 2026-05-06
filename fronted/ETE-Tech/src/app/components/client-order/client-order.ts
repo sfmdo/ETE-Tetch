@@ -4,11 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order.model';
 import { CheckoutFinalComponent } from '../checkout-final/checkout-final';
+import { CfdiXmlService } from '../../services/cfdi.service';
+import { FacturaComponent } from '../factura/factura';
 
 @Component({
   selector: 'app-client-order',
   standalone: true,
-  imports: [CommonModule,CheckoutFinalComponent],
+  imports: [CommonModule,CheckoutFinalComponent,FacturaComponent],
   templateUrl: './client-order.html',
   styleUrls: ['./client-order.css']
 })
@@ -17,12 +19,14 @@ export class ClientOrderComponent implements OnInit {
   loading: boolean = true;
   error: string = '';
   isCheckoutVisible: boolean = false;
+  isFacturaModalVisible: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private orderService: OrderService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private cfdiXmlService: CfdiXmlService
   ) {}
 
   ngOnInit(): void {
@@ -81,6 +85,18 @@ export class ClientOrderComponent implements OnInit {
     if (this.order?.Order_ID) {
       this.cargarOrden(this.order.Order_ID);
       this.cdr.detectChanges();
+    }
+  }
+
+  cerrarModalFactura(): void {
+    this.isFacturaModalVisible = false;
+  }
+
+  abrirModalFactura(): void {
+    if (this.order) {
+      this.isFacturaModalVisible = true;
+    } else {
+      console.error('No hay datos de orden para facturar');
     }
   }
 

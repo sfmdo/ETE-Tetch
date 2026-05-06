@@ -15,6 +15,7 @@ class OrderService {
     const query = `SELECT 
             o.*, 
             uc.Full_Name AS Client_Name, 
+            uc.Email AS Client_Email,
             ut.Full_Name AS Technician_Name
         FROM \`SALES_ORDERS\` o
         LEFT JOIN \`USERS\` uc ON o.Client_ID = uc.User_ID
@@ -57,6 +58,7 @@ class OrderService {
             SELECT 
                 o.*,
                 uc.Full_Name AS Client_Name,
+                uc.Email AS Client_Email,
                 ut.Full_Name AS Technician_Name
         FROM SALES_ORDERS o 
         LEFT JOIN USERS ut ON o.Technician_ID = ut.User_ID 

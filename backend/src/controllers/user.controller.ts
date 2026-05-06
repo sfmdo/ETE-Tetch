@@ -64,6 +64,36 @@ class UserController {
             return res.status(500).json({ message: 'Internal server error' });
         }
     }
+
+    async changePassword(req: AuthRequest, res: Response): Promise<Response | void> {
+        try {
+            const userId = req.user?.userId;
+
+            if (!userId) {
+                return res.status(400).json({ message: 'User ID not found in token' });
+            }
+
+            const { currentPassword, newPassword } = req.body;
+
+            if (!currentPassword || !newPassword) {
+                return res.status(400).json({ message: 'Both current password and new password are required' });
+            }
+
+            const result = await UserService.changePassword(userId, currentPassword, newPassword);
+
+            if (!result.success) {
+                return res.status(400).json({ message: result.message });
+            }
+
+            return res.status(200).json({ message: result.message });
+
+        } catch (error) {
+            console.error('Error in changePassword:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    
 }
 
 export default new UserController();

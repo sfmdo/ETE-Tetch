@@ -11,6 +11,7 @@ import { UserConfigComponent } from './components/user-config/user-config';
 import { UserDashboardComponent } from './components/user-dashboard/user-dashboard';
 import { ClientOrderComponent } from './components/client-order/client-order';
 import { autoRedirectGuard } from './guards/redirect.guard';
+import { CRMComponent } from './components/crm/crm';
 
 export const routes: Routes = [
   // 1. Ruta inicial: Si no hay nada, intentamos ir a productos (el guard decidirá si nos manda al login)
@@ -82,6 +83,12 @@ export const routes: Routes = [
     path: 'redirect-handler', 
     component: LoginComponent, //Componente puente
     canActivate: [autoRedirectGuard] 
+  },
+  { 
+    path: 'crm', 
+    component: CRMComponent,
+    canActivate: [authGuard],
+    data: { role: 'Admin' }
   },
 
   { 

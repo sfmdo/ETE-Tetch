@@ -1,0 +1,91 @@
+<div class="flex-1 overflow-y-auto p-8 relative bg-slate-50/50">
+  
+  <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900 tracking-tight mb-1">Entregas Pendientes</h1>
+      <p class="text-slate-500 text-sm">Gestiona la salida de equipos y notifica a los clientes.</p>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <div class="bg-white border border-slate-200 px-6 py-3 rounded-xl shadow-sm flex items-center gap-4">
+        <div class="flex flex-col items-center border-r border-slate-100 pr-4">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">En Espera</span>
+          <span class="text-2xl font-black text-blue-600">{{ filteredOrders.length }}</span>
+        </div>
+        <span class="material-symbols-outlined text-slate-300">local_shipping</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white p-2 mb-8 rounded-xl flex items-center shadow-sm border border-slate-200">
+    <div class="relative flex-grow">
+      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+      <input 
+        [(ngModel)]="searchTerm"
+        (input)="aplicarFiltros()"
+        class="w-full pl-12 pr-6 py-3 bg-transparent border-none focus:ring-0 text-sm font-medium placeholder:text-slate-400" 
+        placeholder="Filtrar por Cliente o Número de Orden..." 
+        type="text"/>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="text-[11px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 border-b border-slate-100">
+            <th class="py-4 px-6 text-center w-24">Orden</th>
+            <th class="py-4 px-6">Cliente</th>
+            <th class="py-4 px-6">Equipo / Marca</th>
+            <th class="py-4 px-6">Correo electronico</th>
+            <th class="py-4 px-6 text-right">Enviar AViso</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          
+          <tr *ngFor="let order of filteredOrders" class="hover:bg-slate-50/80 transition-colors group">
+            <td class="py-5 px-6">
+              <span class="px-3 py-1 bg-slate-100 text-slate-500 rounded-md text-[11px] font-bold font-mono">
+                #{{ order.Order_Number }}
+              </span>
+            </td>
+            <td class="py-5 px-6">
+              <div class="flex flex-col">
+                <span class="text-sm font-bold text-slate-700">{{ order.Client_Name }}</span>
+                <span class="text-[10px] text-blue-600 font-bold uppercase tracking-tighter">Listo para Entrega</span>
+              </div>
+            </td>
+            <td class="py-5 px-6">
+              <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
+                <span class="text-sm font-medium text-slate-600">{{ order.Brand_Model || 'Equipo General' }}</span>
+              </div>
+            </td>
+            <td class="py-5 px-6">
+              <div class="flex flex-col">
+                <span class="text-sm font-bold text-slate-700">{{ order.Client_Email }}</span>
+              </div>
+            </td>
+            <td class="py-5 px-6 text-right">
+              <button 
+                (click)="notificarCliente(order)"
+                class="inline-flex items-center gap-2 bg-slate-900 hover:bg-blue-600 text-white px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all active:scale-95 shadow-sm">
+                <span class="material-symbols-outlined text-sm">notifications_active</span>
+                Enviar Aviso
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="filteredOrders.length === 0 && !loading">
+            <td colspan="4" class="py-24 text-center">
+              <div class="flex flex-col items-center opacity-20">
+                <span class="material-symbols-outlined text-6xl mb-2">package_2</span>
+                <p class="text-xs font-bold uppercase tracking-widest">Sin entregas pendientes</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

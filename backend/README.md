@@ -618,3 +618,88 @@ Permanently removes an expense record. Warning: This action cannot be undone.
 | 401 Unauthorized | {"message": "Access denied. No token provided."} | Token is missing from the Authorization header. |
 | 404 Not Found | {"message": "Expense not found."} | The provided Expense_ID does not exist in the database. |
 | 500 Internal Error | {"error": "[Database Error Details]"} | Server-side failure or database connection timeout. |
+
+# 6. Email & CRM Notifications Module
+
+## Overview
+Este módulo se encarga de la comunicación directa con el cliente mediante protocolos SMTP. Su función principal es notificar a los usuarios cuando sus equipos están listos para recolección, liberando flujo en el inventario y mejorando la experiencia del cliente.
+
+## Configuration (Environment Variables)
+Para que este módulo funcione, el servidor debe tener configuradas las siguientes variables en el archivo `.env`:
+
+- `EMAIL_HOST`: Servidor SMTP (ej. `smtp.gmail.com`).
+- `EMAIL_PORT`: Puerto (`465` para SSL).
+- `EMAIL_USER`: Cuenta de correo emisora.
+- `EMAIL_PASS`: Contraseña de aplicación (App Password).
+
+---
+
+## Endpoints API
+
+### 6.1. Send Pickup Notification
+Envía un correo electrónico profesional al cliente utilizando una plantilla HTML dinámica que incluye los detalles de la orden y el saldo pendiente.
+
+- **Endpoint:** `POST /api/email/send-notification`
+- **Access:** Authenticated (Admin, Technician)
+
+**Request Body (JSON):**
+```json
+{
+  "Order_Number": "ORD-1777340410406",
+  "Client_Name": "Santiago",
+  "Client_Email": "cliente@ejemplo.com",
+  "Brand_Model": "Huawei P20",
+  "Order_Total": "185.60"
+}
+```
+
+**Logic:**
+- Valida la existencia del `Order_Number`.
+- Formatea el `Order_Total` a dos decimales de forma segura.
+- Inyecta los datos en el layout HTML de ETE-Tech.
+- Realiza el envío mediante el `EmailService` usando Nodemailer.
+
+**Success Response (200 OK):**
+```json
+{
+  "ok": true,
+  "msg": "Correo enviado con éxito"
+}
+```
+
+**Error Responses:**
+- **400 Bad Request:** Si falta el número de orden o datos esenciales.
+- **500 Internal Server Error:** Fallo en la conexión con el servidor SMTP o error en la resolución del transporte.
+
+---
+
+## Email Template Design
+El correo enviado incluye una tarjeta visual con los siguientes elementos:
+
+- **Header:** Banner azul marino con branding de ETE-Tech.
+- **Order Summary:** Caja destacada con el número de folio y el monto total a pagar.
+- **Logistics Info:** Horarios de atención y ubicación del centro de servicio.
+- **Responsive Design:** Optimizado para lectura en dispositivos móviles.
+
+### 6.2. Send Temporary Password (Reset Password)
+Internally generates a temporary one-time password, updates it in the database (with its proper hashing process), and sends a security email to the user so they can log in and reconfigure their account.
+
+- **Endpoint:** `POST /api/email/reset-password`
+- **Access:** Public
+
+**Request Body (JSON):**
+```json
+{
+  "email": "client@example.com"
+}
+
+**Success Response (200 OK):**
+{
+  "ok": true,
+  "msg": "A new temporary password has been generated and sent to the provided email address."
+}
+
+**Error Responses:**
+- **400 Bad Request:** If the mandatory `email` parameter is missing.
+- **404 Not Found:** (Optional) If the email does not belong to any registered user in the database.
+- **500 Internal Server Error:** Error connecting to the database, SMTP transport failure, or issues encrypting the credentials.
