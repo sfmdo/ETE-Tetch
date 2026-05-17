@@ -3,7 +3,7 @@ export interface UserRegisterPayload {
   Email: string;
   Password: string;
   Phone: string;
-  Role: 'User'; // Forzamos que sea 'User' según tu requerimiento
+  Role: 'User'; 
   Status: number;
 }
 
@@ -12,7 +12,7 @@ export interface AdminRegisterPayload {
   Email: string;
   Password: string;
   Phone: string;
-  Role: 'Admin'; // Forzamos que sea 'User' según tu requerimiento
+  Role: 'Admin'; 
   Status: number;
 }
 

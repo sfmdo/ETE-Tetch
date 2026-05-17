@@ -20,11 +20,9 @@ export class App {
   showNavbar = true;
 
   constructor(private router: Router) {
-    // Escuchamos los cambios de ruta
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      // Verificamos si la ruta actual es login
       this.showNavbar = !event.urlAfterRedirects.includes('/login') && 
                   !event.urlAfterRedirects.includes('/register');
     });

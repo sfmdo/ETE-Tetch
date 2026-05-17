@@ -34,7 +34,7 @@ class UserController {
                 return res.status(400).json({ message: 'User ID not found in token' });
             }
 
-            //Se extrae solo la informacion de contacto
+
             const { Full_Name, Phone } = req.body;
 
             const updateData: any = {};
@@ -51,7 +51,6 @@ class UserController {
                 return res.status(404).json({ message: 'User not found or no changes made' });
             }
 
-            // Opcional: Traer los datos frescos para devolverlos al frontend
             const updatedUser = await UserService.findById(userId);
 
             return res.status(200).json({

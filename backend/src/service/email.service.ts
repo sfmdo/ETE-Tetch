@@ -129,9 +129,6 @@ export class EmailService {
     });
   }
 
-  /**
-   * Envía la contraseña temporal al usuario para restablecer su cuenta
-   */
   async sendTemporalPassword(email: string, temporalPassword: string) {
     const htmlContent = `
       <!DOCTYPE html>

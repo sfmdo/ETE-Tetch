@@ -25,9 +25,7 @@ class ProductServicesService {
     async update(id: number, data: Partial<IProductServices>): Promise<boolean> {
         let updateData = { ...data };
 
-        // Si se intenta cambiar el precio o el impuesto, debemos recalcular el Final_Price
         if (data.Sale_Price !== undefined || data.Tax_Rate !== undefined) {
-            // Buscamos los valores actuales en la DB para los campos que NO vienen en el update
             const current = await this.getById(id);
             if (current) {
                 const price = data.Sale_Price ?? current.Sale_Price;
@@ -56,7 +54,7 @@ class ProductServicesService {
                 params.push((filters as any)[key]);
                 return `${key} = ?`;
             });
-            query += ` WHERE ` + conditions.join(' AND ');
+            query += ` AND ` + conditions.join(' AND ');
         }
 
         const [rows] = await connection.promise().query<IProductServices[]>(query, params);

@@ -13,7 +13,6 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
         return;
     }
 
-    //Extraer el token (quitando la palabra "Bearer ")
     const token = authHeader.split(' ')[1];
 
     try {

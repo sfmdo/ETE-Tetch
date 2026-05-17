@@ -57,7 +57,6 @@ export class UserDashboardComponent implements OnInit {
         );
         this.completedOrders = ordenes.filter(o => o.Logistics_Status === 'PAID');
         
-        // Filtramos las que tienen saldo pendiente mayor a 0
         this.pendingPayments = ordenes.filter(o => Number(o.Pending_Balance) > 0 && o.Logistics_Status === 'COMPLETED');
 
         this.cargando = false;

@@ -41,7 +41,6 @@ export class AddProductModalComponent implements OnInit {
     this.productService.getOnlyProducts().subscribe({
       next: (data: any) => {
         try {
-          // Normalización de la respuesta de la API
           if (Array.isArray(data)) {
             this.products = data;
           } else if (data && Array.isArray(data.data)) {
@@ -55,7 +54,7 @@ export class AddProductModalComponent implements OnInit {
           console.error('Error procesando productos:', err);
         } finally {
           this.isLoadingProducts = false;
-          this.cdr.detectChanges(); // Forzamos a la UI a reaccionar
+          this.cdr.detectChanges(); 
         }
       },
       error: (err) => {
@@ -67,7 +66,6 @@ export class AddProductModalComponent implements OnInit {
   }
 
   saveProduct(): void {
-  // 1. Validación básica
   if (!this.orderId || !this.selectedProductId || this.selectedQuantity < 1) {
     console.error('Faltan datos en el modal:', { 
       orderId: this.orderId, 
@@ -80,18 +78,16 @@ export class AddProductModalComponent implements OnInit {
   this.isSaving = true;
   this.cdr.detectChanges();
 
-  // 2. Construcción del Payload con conversión EXPLÍCITA a Number
   const payload: AddItemsPayload = {
-    Order_ID: Number(this.orderId), // Forzamos número
+    Order_ID: Number(this.orderId), 
     items: [
       { 
-        Product_ID: Number(this.selectedProductId), // Forzamos número
-        Quantity: Number(this.selectedQuantity)     // Forzamos número
+        Product_ID: Number(this.selectedProductId), 
+        Quantity: Number(this.selectedQuantity)     
       }
     ]
   };
 
-  // 3. Log para depuración (revisa esto en la consola antes de que falle)
   console.log('Enviando este payload a la API:', payload);
 
   this.orderService.addItems(payload).subscribe({
@@ -103,7 +99,6 @@ export class AddProductModalComponent implements OnInit {
       this.close.emit();
     },
     error: (err) => {
-      // 4. Si falla, mira el "err.error" para ver qué campo rechaza el backend
       console.error('Error detallado del servidor:', err.error);
       alert('Error al guardar: ' + (err.error?.message || 'Revisa los datos'));
       this.isSaving = false;

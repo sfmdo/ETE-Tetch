@@ -103,7 +103,6 @@ class OrderService {
                 Line_Subtotal: service.Final_Price
             }, conn);
 
-            // 4. Lógica: Actualizar totales finales
             await this.updateTotals(orderId, service.Final_Price, service.Final_Price, conn);
 
             await conn.commit();

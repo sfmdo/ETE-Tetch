@@ -132,7 +132,6 @@ class OrderController {
         }
     }
 
-    // 4. FINISH DIAGNOSIS (TECHNICAL REPORT)
     async finishDiagnosis(req: Request, res: Response) {
         try {
             const { id } = req.params;
@@ -185,11 +184,10 @@ class OrderController {
         try {
             const { id } = req.params;
         
-            // Obtenemos la cabecera
+
             const order = await OrderService.getById(Number(id));
             if (!order) return res.status(404).json({ message: "Orden no encontrada" });
 
-            // Obtenemos los productos/servicios asociados desde OrderDetailService
             const details = await OrderDetailService.getByOrderId(Number(id));
 
             return res.json({
@@ -230,7 +228,6 @@ class OrderController {
         }
     }
 
-    // 1. Obtener TODAS las órdenes de un cliente (Historial)
     async getClientOrders(req: Request, res: Response) {
         try {
             const clientId = Number(req.params.clientId);

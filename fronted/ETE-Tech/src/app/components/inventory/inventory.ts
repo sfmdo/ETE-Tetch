@@ -21,7 +21,6 @@ export class InventoryComponent implements OnInit {
     totalSkus: 0,
     lowStockCount: 0,
     inventoryValue: 0,
-    pendingRepairs: 56 // Mock constante
   };
 
   constructor(private productService: ProductService,
@@ -42,7 +41,6 @@ export class InventoryComponent implements OnInit {
       this.calculateStats();
       this.loading = false;
       
-      // 3. Obliga a Angular a revisar la vista justo ahora
       this.cdr.detectChanges(); 
     },
     error: (err) => {

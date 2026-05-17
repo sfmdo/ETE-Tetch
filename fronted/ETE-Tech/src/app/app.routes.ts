@@ -14,7 +14,7 @@ import { autoRedirectGuard } from './guards/redirect.guard';
 import { CRMComponent } from './components/crm/crm';
 
 export const routes: Routes = [
-  // 1. Ruta inicial: Si no hay nada, intentamos ir a productos (el guard decidirá si nos manda al login)
+  // 1. Ruta inicial(Manda a login por el Guard)
   { 
     path: '', 
     redirectTo: 'products', 
@@ -30,7 +30,7 @@ export const routes: Routes = [
     path: 'register',
     component: RegisterComponent
   },
-  // 3. Rutas protegidas: Solo entran si tienen Token
+  // 3. Rutas protegidas
   { 
     path: 'inventory', 
     component: InventoryComponent,

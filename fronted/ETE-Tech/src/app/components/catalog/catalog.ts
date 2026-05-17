@@ -8,13 +8,11 @@ import { Product } from '../../models/product.model';
 import { ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 
-// IMPORTANTE: Recuerda importar aquí tu CheckoutComponent
 import { CheckoutComponent } from '../checkout/checkout';
 
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  // Tienes que agregar CheckoutComponent a los imports para poder usar <app-checkout> en el HTML
   imports: [CommonModule, ReactiveFormsModule, CheckoutComponent], 
   templateUrl: './catalog.html',
   styleUrls: ['./catalog.css']

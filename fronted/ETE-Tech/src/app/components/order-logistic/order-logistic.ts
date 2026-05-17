@@ -67,8 +67,6 @@ export class OrderLogisticComponent implements OnInit {
     });
   }
 
-  // --- MANEJADORES DE EVENTOS DE LOS COMPONENTES HIJOS ---
-
   onStatusChange(newStatus: OrderStatus): void {
     if (!this.order) return;
     this.orderService.updateStatus(this.order.Order_ID, { status: newStatus }).subscribe({
@@ -117,7 +115,6 @@ export class OrderLogisticComponent implements OnInit {
   }
 
   onPartsUpdated(): void {
-    // Se llama cuando el hijo de refacciones agrega algo
     if (this.order) this.loadOrder(this.order.Order_ID);
   }
 }

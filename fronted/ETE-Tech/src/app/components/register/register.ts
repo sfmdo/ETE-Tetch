@@ -29,17 +29,15 @@ export class RegisterComponent {
     this.errorMessage = '';
     this.loading = true;
 
-    // Construimos el payload final según tu API
     const payload: UserRegisterPayload = {
       ...this.formData,
-      Role: 'User', // Hardcoded por seguridad
-      Status: 1     // Usuario activo por defecto
+      Role: 'User',
+      Status: 1     
     };
 
     this.authService.register(payload).subscribe({
       next: (res) => {
         console.log('Registro exitoso:', res.message);
-        // Redirigir al login después de registrarse
         this.router.navigate(['/login']);
       },
       error: (err) => {
