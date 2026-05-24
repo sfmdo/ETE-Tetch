@@ -50,6 +50,10 @@ export class UserConfigComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserConfig();
   }
+  isPasswordSecure(password: string): boolean {
+    const securePasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\W_]{8,}$/;
+    return securePasswordRegex.test(password);
+  }
 
   loadUserConfig(): void {
     this.isLoading = true;
@@ -108,6 +112,11 @@ export class UserConfigComponent implements OnInit {
     this.showStatus('La nueva contraseña y su confirmación no coinciden.', true);
     return;
   }
+  if (!this.isPasswordSecure(this.contrasenaData.newPassword)) {
+      this.showStatus('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.', true)
+      this.cdr.detectChanges()
+      return; 
+    }
 
   this.isSavingPassword = true;
   this.cdr.detectChanges();

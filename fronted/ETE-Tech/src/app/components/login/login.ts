@@ -4,13 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router'; 
 import { AuthService } from '../../services/auth.service';
 import { EmailService } from '../../services/email.service';
-import { TermsAndConditionsComponent } from '../terms-and-conditions/terms-and-conditions';
-import { PrivacyNoticeComponent } from '../privacy-notice/privacy-notice';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TermsAndConditionsComponent, PrivacyNoticeComponent],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css'] 
 })
@@ -24,12 +22,6 @@ export class LoginComponent {
   resetEmail = '';
   modalErrorMessage = '';
   isLoadingReset = false;
-
-  acceptedTerms = false;
-  acceptedPrivacy = false;
-
-  showTerms = false;
-  showPrivacy = false;
 
   constructor(
     private authService: AuthService, 
@@ -49,12 +41,6 @@ export class LoginComponent {
       return;
     }
 
-    if (!this.acceptedTerms || !this.acceptedPrivacy) {
-      this.errorMessage = 'Debes aceptar los términos y el aviso de privacidad para continuar.';
-      this.cdr.detectChanges();
-      return;
-    }
-
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
         this.zone.run(() => {
@@ -71,7 +57,7 @@ export class LoginComponent {
           const backendMessage = err.error?.message || err.error?.msg;
 
           if (err.status === 401 || err.status === 400) {
-            this.errorMessage = backendMessage || 'Credenciales inválidas. Por favor intenta de nuevo.';
+            this.errorMessage = 'Credenciales inválidas. Por favor intenta de nuevo.';
           } else {
             this.errorMessage = 'Ocurrió un error en el servidor. Intenta más tarde.';
           }
